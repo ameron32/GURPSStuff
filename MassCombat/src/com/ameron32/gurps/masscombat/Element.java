@@ -103,11 +103,16 @@ public class Element {
 
 
 
+	public static final float QUALITY_TROOP_ELITE = 1.0f;
+	public static final float QUALITY_TROOP_GOOD = 0.5f;
+	public static final float QUALITY_TROOP_AVERAGE = 0.0f;
+	public static final float QUALITY_TROOP_INFERIOR = -0.5f;
 
-
-
-
-
+	public static final float QUALITY_EQUIPMENT_VERY_FINE = 1.5f;
+	public static final float QUALITY_EQUIPMENT_FINE = 1.0f;
+	public static final float QUALITY_EQUIPMENT_GOOD = 0.5f;
+	public static final float QUALITY_EQUIPMENT_BASIC = 0.0f;
+	public static final float QUALITY_EQUIPMENT_POOR = -0.25f;
 
   // SUBCLASSES
   //****************************************
