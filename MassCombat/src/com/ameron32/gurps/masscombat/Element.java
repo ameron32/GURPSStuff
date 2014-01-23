@@ -9,32 +9,72 @@ public class Element {
   
      String name = "";
    String customElementType = "";
-  String elementType = "";
+  public String elementType = "";
    String description = "";
   
   int ts;
   final List<SpecialClass> specialClasses = new ArrayList<SpecialClass>();
   int wt;
-  Mobility mobility;
+  final List<Mobility> mobilities = new ArrayList<Mobility>();
   int costToRaiseK;
   int costToMaintainK;
   int tl;
+  
+  int carryingCapacity = 0;
   
    final List<Feature> features = new ArrayList<Feature>();
    float equipQuality = 0.0f;
    float troopQuality = 0.0f;
   
-  public static Element newLibraryStandard(String elementType, int ts, SpecialClass[] specialClasses, int wt, Mobility mobility, int costToRaiseK, int costToMaintainK, int tl) {
-    Element standard = new Element(elementType, ts, specialClasses, wt, mobility, costToRaiseK, costToMaintainK, tl);
+   /**
+    * Intended factory for standard GURPS units from book.
+    * 
+    * @param elementType
+    * @param ts
+    * @param specialClasses
+    * @param wt
+    * @param mobility
+    * @param costToRaiseK
+    * @param costToMaintainK
+    * @param tl
+    * @return
+    */
+  public static Element newLibraryStandard(String elementType, int ts, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl) {
+    Element standard = new Element(elementType, ts, specialClasses, wt, mobilities, costToRaiseK, costToMaintainK, tl);
     return standard;
   }
   
-  public static Element newLibraryCustom(String customElementType, String elementType, String description, int ts, SpecialClass[] specialClasses, int wt, Mobility mobility, int costToRaiseK, int costToMaintainK, int tl, Feature[] features, float equipQuality, float troopQuality) {
-    Element custom = new Element(elementType, ts, specialClasses, wt, mobility, costToRaiseK, costToMaintainK, tl);
+  /**
+   * Intended factory for custom GURPS units from book.
+   * 
+   * @param customElementType
+   * @param elementType
+   * @param description
+   * @param ts
+   * @param specialClasses
+   * @param wt
+   * @param mobility
+   * @param costToRaiseK
+   * @param costToMaintainK
+   * @param tl
+   * @param features
+   * @param equipQuality
+   * @param troopQuality
+   * @return
+   */
+  public static Element newLibraryCustom(String customElementType, String elementType, String description, int ts, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl, Feature[] features, float equipQuality, float troopQuality) {
+    Element custom = new Element(elementType, ts, specialClasses, wt, mobilities, costToRaiseK, costToMaintainK, tl);
     custom.initCustom(customElementType, description, features, equipQuality, troopQuality);
     return custom;
   }
   
+  /**
+   * Intended factory for on-the-fly creation of new units LIKE an existing unit in the library.
+   * 
+   * @param element
+   * @param name
+   * @return
+   */
   public static Element newCopyStandard(Element element, String name) {
     Element copy = new Element(element);
     copy.name = name;
@@ -42,13 +82,13 @@ public class Element {
   }
   
   // STANDARD CONSTRUCTOR
-  private Element(String elementType, int ts, SpecialClass[] specialClasses, int wt, Mobility mobility, int costToRaiseK, int costToMaintainK, int tl) {
+  private Element(String elementType, int ts, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl) {
     super();
     this.elementType = elementType;
     this.ts = ts;
     setSpecialClasses(specialClasses);
     this.wt = wt;
-    this.mobility = mobility;
+    setMobilities(mobilities);
     this.costToRaiseK = costToRaiseK;
     this.costToMaintainK = costToMaintainK;
     this.tl = tl;
@@ -64,7 +104,7 @@ public class Element {
     this.ts = element.ts;
     setSpecialClasses(element.specialClasses);
     this.wt = element.wt;
-    this.mobility = element.mobility;
+    setMobilities(element.mobilities);
     this.costToRaiseK = element.costToRaiseK;
     this.costToMaintainK = element.costToMaintainK;
     this.tl = element.tl;
@@ -82,6 +122,18 @@ public class Element {
     if (specialClasses != null && specialClasses.size() != 0) 
       this.specialClasses.addAll(specialClasses);
   }
+  
+  private void setMobilities(Mobility...mobilities) {
+    if (mobilities != null && mobilities.length != 0) 
+      this.mobilities.addAll(Arrays.asList(mobilities));
+  }
+  
+  private void setMobilities(List<Mobility> mobilities) {
+    if (mobilities != null && mobilities.size() != 0) 
+      this.mobilities.addAll(mobilities);
+  }
+  
+  public void setCarryingCapacity(int carryingCapacity) { this.carryingCapacity = carryingCapacity; }
   
   private void initCustom(String customElementType, String description, Feature[] features, float equipQuality, float troopQuality) {
     this.customElementType = customElementType;
@@ -135,7 +187,7 @@ public class Element {
     }
     
     public enum Type {
-      Air, Arm, Art, Cv, C3I, Eng, F, Nav, Rec, T
+      Air, Arm, Art, Cv, C3I, Eng, F, Nav, Rec, T, None
     }
   }
   
@@ -155,5 +207,9 @@ public class Element {
     public enum Type {
       Foot, Mech, Motor, Mtd, Coast, Sea, FA, SA
     }
+  }
+  
+  public int getCarryingCapacity() {
+    return carryingCapacity;
   }
 }
