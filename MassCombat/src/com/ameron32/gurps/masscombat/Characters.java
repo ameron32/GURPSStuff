@@ -2,8 +2,7 @@ package com.ameron32.gurps.masscombat;
 
 import java.util.*;
 
-public class Characters
- {
+public class Characters {
 	
 	public static class Character {
 		public String name;
@@ -16,7 +15,8 @@ public class Characters
 		private Character() {}
 		
 		class Skill {
-			Skill(String name){this.name = name;}
+			/** simple constructor */
+		  Skill(String name) {this.name = name;}
 			public String name;
 			public int level;
 		}
@@ -26,6 +26,7 @@ public class Characters
 		Type type;
 		Force ofForce;
 		
+		/** Random Leader factory */
 		public static Leader generateLeader() {
 			Leader leader = new Leader();
 			Random r = new java.util.Random();
