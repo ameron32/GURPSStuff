@@ -6,13 +6,17 @@ import java.util.List;
 
 
 public class Element {
+  public static final String TAG = "Element";
+  public static final boolean DEBUG = true;
+  
   
      String name = "";
    String customElementType = "";
   public String elementType = "";
    String description = "";
   
-  int ts;
+  float ts;
+  float supportTS;
   final List<SpecialClass> specialClasses = new ArrayList<SpecialClass>();
   int wt;
   final List<Mobility> mobilities = new ArrayList<Mobility>();
@@ -39,8 +43,8 @@ public class Element {
     * @param tl
     * @return
     */
-  public static Element newLibraryStandard(String elementType, int ts, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl) {
-    Element standard = new Element(elementType, ts, specialClasses, wt, mobilities, costToRaiseK, costToMaintainK, tl);
+  public static Element newLibraryStandard(String elementType, float ts, float supportTS, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl) {
+    Element standard = new Element(elementType, ts, supportTS, specialClasses, wt, mobilities, costToRaiseK, costToMaintainK, tl);
     return standard;
   }
   
@@ -62,8 +66,8 @@ public class Element {
    * @param troopQuality
    * @return
    */
-  public static Element newLibraryCustom(String customElementType, String elementType, String description, int ts, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl, Feature[] features, float equipQuality, float troopQuality) {
-    Element custom = new Element(elementType, ts, specialClasses, wt, mobilities, costToRaiseK, costToMaintainK, tl);
+  public static Element newLibraryCustom(String customElementType, String elementType, String description, float ts, float supportTS, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl, Feature[] features, float equipQuality, float troopQuality) {
+    Element custom = new Element(elementType, ts, supportTS, specialClasses, wt, mobilities, costToRaiseK, costToMaintainK, tl);
     custom.initCustom(customElementType, description, features, equipQuality, troopQuality);
     return custom;
   }
@@ -82,10 +86,11 @@ public class Element {
   }
   
   // STANDARD CONSTRUCTOR
-  private Element(String elementType, int ts, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl) {
+  private Element(String elementType, float ts, float supportTS, SpecialClass[] specialClasses, int wt, Mobility[] mobilities, int costToRaiseK, int costToMaintainK, int tl) {
     super();
     this.elementType = elementType;
     this.ts = ts;
+    this.supportTS = supportTS;
     setSpecialClasses(specialClasses);
     this.wt = wt;
     setMobilities(mobilities);
@@ -102,6 +107,7 @@ public class Element {
     this.elementType = element.elementType;
     this.description = element.description;
     this.ts = element.ts;
+    this.supportTS = element.supportTS;
     setSpecialClasses(element.specialClasses);
     this.wt = element.wt;
     setMobilities(element.mobilities);
@@ -205,7 +211,7 @@ public class Element {
     }
     
     public enum Type {
-      Foot, Mech, Motor, Mtd, Coast, Sea, FA, SA
+      Foot, Mech, Motor, Mtd, Coast, Sea, FA, SA, None
     }
   }
   

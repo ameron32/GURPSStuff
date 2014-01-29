@@ -44,6 +44,8 @@ public static final boolean DEBUG = false;
     standardSpecialClassTypes.put(SpecialClass.Type.None, 
         SpecialClass.newInstance("None", SpecialClass.Type.None));
   	  
+    standardMobilityTypes.put(Mobility.Type.None, 
+        Mobility.newInstance("Must be transported", Mobility.Type.None));
   	standardMobilityTypes.put(Mobility.Type.Foot, 
   	    Mobility.newInstance("Foot", Mobility.Type.Foot));
   	standardMobilityTypes.put(Mobility.Type.Mech, 
@@ -62,32 +64,31 @@ public static final boolean DEBUG = false;
   	    Mobility.newInstance("Slow Air", Mobility.Type.SA));
       
 
-    // store("Balloon; (1); Air; 2; 0; 50K; 5K; 5");
-  	// needs (support only)
+    store("Balloon; (1); Air; 2; 0; 50K; 5K; 5");
     store("Bowmen; 2; F; 1; Foot; 40K; 8K; 2");
     store("Cavalry Pistols 4; 3; Cv,F; 2; Mtd; 100K; 20K; 4");
     store("Cavalry Pistols 5; 6; Cv,F; 2; Mtd; 100K; 20K; 5");
-    store("Draft Team; 0; T; 2; Mtd; 10K; 1K; 1");
-    // store("Heavy Artillery"; 2.5*; Art; 2; Foot; 100K; 10K; 2"));
-    // store("Heavy Artillery 3; (5); Art; 2; Foot; 100K; 10K; 3");
-    // store("Heavy Artillery 4; (10); Art; 2; Foot; 100K; 10K; 4");
-    // store("Heavy Artillery 5; (20); Art; 2; Foot; 100K; 10K; 5");
-    // needs (support only)
+    store("Draft Team; 0; T2; 2; Mtd; 10K; 1K; 1");
+    store("Heavy Artillery 2; (2.5); Art; 2; Foot; 100K; 10K; 2");
+    store("Heavy Artillery 3; (5); Art; 2; Foot; 100K; 10K; 3");
+    store("Heavy Artillery 4; (10); Art; 2; Foot; 100K; 10K; 4");
+    store("Heavy Artillery 5; (20); Art; 2; Foot; 100K; 10K; 5");
     store("Heavy Cavalry; 5; Cv; 2; Mtd; 200K; 40K; 2");
     store("Heavy Chariots; 4; Cv; 4; Mtd; 160K; 32K; 1");
     store("Heavy Infantry; 4; –; 1; Foot; 40K; 8K; 2");
     store("Horse Archers; 2; Cv,F,Rec; 2; Mtd; 120K; 24K; 2");
     store("Horse Artillery; 10; Art; 2; Mtd; 150K; 30K; 5");
-    // store("Light Artillery; (1)*; Art; 1; Foot; 40K; 8K; 2");
-    // needs all TLs & (support only)
+    store("Light Artillery; (1); Art; 1; Foot; 40K; 8K; 2");
+    store("Light Artillery 3; (2); Art; 1; Foot; 40K; 8K; 3");
+    store("Light Artillery 4; (4); Art; 1; Foot; 40K; 8K; 4");
+    store("Light Artillery 5; (8); Art; 1; Foot; 40K; 8K; 5");
     store("Light Cavalry; 2; Cv,Rec; 2; Mtd; 100K; 20K; 2");
     store("Light Chariots; 2; Cv,F; 4; Mtd; 100K; 20K; 1");
     store("Light Infantry; 2; Rec; 1; Foot; 40K; 8K; 1");
     store("Line Infantry; 3; F; 1; Foot; 30K; 6K; 5");
     store("Medium Cavalry; 3; Cv,F; 2; Mtd; 150K; 30K; 2");
     store("Medium Infantry; 3; –; 1; Foot; 30K; 6K; 1");
-    // store("Miners; 0.5*; Eng; 1; Foot; 30K; 6K; 2");
-    // needs float?
+    store("Miners 2; 0.5; Eng; 1; Foot; 30K; 6K; 2");
     store("Miners 3; 1; Eng; 1; Foot; 30K; 6K; 3");
     store("Miners 4; 2; Eng; 1; Foot; 30K; 6K; 4");
     store("Miners 5; 4; Eng; 1; Foot; 30K; 6K; 5");
@@ -147,48 +148,83 @@ public static final boolean DEBUG = false;
     final int maintain = 6;
     final int tl = 7;
     
+    String mElement;
+    float mTS;
+    float mSupportTS;
+    SpecialClass[] mSpecialClasses;
+    int mCarryingCapacity;
+    int mWT;
+    Mobility[] mMob;
+    int mRaise;
+    int mMaintain;
+    int mTL;
+    
+    
     // convert elementCode string into pieces for processing
     String[] pieces = elementCode.split(";");
     for (int i = 0; i < pieces.length; i++) { pieces[i] = pieces[i].trim(); }
     
+    
+    // DEBUG
     if (DEBUG) {
       StringBuilder sb = new StringBuilder();
       for (String piece: pieces) { sb.append(piece + "\n"); }
       Log.d(TAG, sb.toString());
     }
+
     
-    // this whole thing just crops a K off each CASE where one is needed. add a case for more
-    for (int j = 0; j < 2; j++) {
-      int pieceToCrop = -1;
-      switch (j) {
-      case 0:
-        pieceToCrop = raise;
-        break;
-      case 1:
-        pieceToCrop = maintain;
-        break;
-      default:
-        pieceToCrop = -1;
-      }
-      if (pieceToCrop != -1) {
-        if (pieces[pieceToCrop].contains("K") || pieces[pieceToCrop].contains("k")) {
-          pieces[pieceToCrop] = pieces[pieceToCrop].substring(0, pieces[pieceToCrop].length() - 1);
+    // ELEMENT
+    mElement = pieces[element];
+    
+    
+    // TS & SUPPORTTS
+    // decode ts & supportTS
+    mTS = 0;
+    mSupportTS = 0;
+    if (pieces[ts].contains("+")) {
+      String[] tsFormula = pieces[ts].split("+");
+      for (String s : tsFormula) {
+        s = s.trim();
+        boolean stop = false;
+        
+        // test for standard TS
+        if (!stop) {
+          try {
+            mTS = Float.parseFloat(s);
+            stop = true;
+          }
+          catch (NumberFormatException e) {}
+        }
+        
+        // test for support TS
+        if (!stop) {
+          if (s.contains("(") && s.contains(")")) {
+            s = s.substring(1, s.length() - 1);
+            mSupportTS = Float.parseFloat(s);
+            stop = true;
+          }
+        }
+        
+        // log failure
+        if (!stop) {
+          Log.d(TAG, "decode TS found an irregular number");
         }
       }
     }
-    
+
+
+    // SPECIALCLASSES
     // split specialClasses if more than 1 separated by comma
-    //***********************************************************
     String[] sSpecialClasses;
     SpecialClass.Type[] scSpecialClasses;
     sSpecialClasses = pieces[specialClasses].split(",");
     scSpecialClasses = new SpecialClass.Type[sSpecialClasses.length];
-    int carryingCapacity = 0;
+    mCarryingCapacity = 0;
     for (int k = 0; k < sSpecialClasses.length; k++) {
       sSpecialClasses[k] = sSpecialClasses[k].trim();
       if (sSpecialClasses[k].startsWith("T")) {
         scSpecialClasses[k] = SpecialClass.Type.valueOf("T");
-        carryingCapacity = Integer.decode(sSpecialClasses[k].substring(1));
+        mCarryingCapacity = Integer.decode(sSpecialClasses[k].substring(1));
       } 
       else if (sSpecialClasses[k].equalsIgnoreCase("–")) {
         scSpecialClasses[k] = SpecialClass.Type.None;
@@ -197,34 +233,52 @@ public static final boolean DEBUG = false;
         scSpecialClasses[k] = SpecialClass.Type.valueOf(sSpecialClasses[k]);
       }
     }
-    //***********************************************************
+    mSpecialClasses = getSpecialClasses(scSpecialClasses);
+    
+    
+    // WT
+    // uncarriable WT
+    mWT = 0;
+    if (pieces[wt].equalsIgnoreCase("–")) {
+      mWT = 10000;
+    } else {
+      mWT = Integer.decode(pieces[wt]);
+    }
 
+    
+    // MOBILITIES
     // branch for T + carryingCapacity
     String[] sMobilities = pieces[mob].split(",");
     Mobility.Type[] mobilities = new Mobility.Type[sMobilities.length];
     for (int l = 0; l < sMobilities.length; l++) {
       sMobilities[l] = sMobilities[l].trim();
+      if (sMobilities[l].equalsIgnoreCase("0")) {
+        sMobilities[l] = "None";
+      }
       mobilities[l] = Mobility.Type.valueOf(sMobilities[l]);
     }
+    mMob = getMobility(mobilities);
     
-    // uncarriable WT
-    int transportWeight = 0;
-    if (pieces[wt].equalsIgnoreCase("–")) {
-      transportWeight = 10000;
-    } else {
-      transportWeight = Integer.decode(pieces[wt]);
-    }
     
+    // RAISE
+    mRaise = 0;
+    mRaise = convertKto1000(pieces[raise]);
+    
+    
+    // MAINTAIN
+    mMaintain = 0;
+    mMaintain = convertKto1000(pieces[maintain]);
+    
+        
+    // TL
+    mTL = Integer.decode(pieces[tl]);
+    
+    
+    // Generate the LibraryElement
     Element e = Element.newLibraryStandard(
-        pieces[element], 
-        Integer.decode(pieces[ts]), 
-        getSpecialClasses(scSpecialClasses), 
-        transportWeight, 
-        getMobility(mobilities), 
-        Math.round((Float.parseFloat(pieces[raise]))*1000), 
-        Math.round((Float.parseFloat(pieces[maintain]))*1000), 
-        Integer.decode(pieces[tl]));
-    e.setCarryingCapacity(carryingCapacity);
+        mElement, mTS, mSupportTS, mSpecialClasses, mWT, 
+        mMob, mRaise, mMaintain, mTL);
+    e.setCarryingCapacity(mCarryingCapacity);
     return e;
   }
   
@@ -256,5 +310,23 @@ public static final boolean DEBUG = false;
   
   public int getStandardElementsSize() {
     return standardElements.size();
+  }
+
+  
+  
+  
+  
+  
+  
+  /**
+   * Helper method.
+   * @param intWithK String containing a number with trailing K to convert to 1000. Or no K, that's fine too.
+   * @return cropped Integer multiplied by 1,000
+   */
+  int convertKto1000(String intWithK) {
+    if (intWithK.contains("K") || intWithK.contains("k")) {
+      intWithK = intWithK.substring(0, intWithK.length() - 1);
+    }
+    return Math.round((Float.parseFloat(intWithK) * 1000));
   }
 }

@@ -5,6 +5,7 @@ public class BattleManager {
 	boolean inBattle = false;
 	boolean canceled = false;
 	
+	
 	void prepare() {
 		initiativeCommand();
 	}
@@ -59,5 +60,6 @@ public class BattleManager {
 		inBattle = false;
 		canceled = true;
 	}
+	
 	
 }
