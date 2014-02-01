@@ -7,8 +7,6 @@ public class BattleManager implements TurnBased {
 	boolean canceled = false;
 	
 	public void onPrepare() {
-	
-	void prepare() {
 		initiativeCommand();
 	}
 	
