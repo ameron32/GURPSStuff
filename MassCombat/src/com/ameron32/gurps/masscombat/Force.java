@@ -3,11 +3,9 @@ package com.ameron32.gurps.masscombat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ameron32.gurps.masscombat.Characters.Leader;
-
 public class Force {
   
-  // FIGHTING FORCE
+  // *** FIGHTING FORCE
   // *********************************
   List<Unit>    units = new ArrayList<Unit>();
   // *** LEADERS *********************
@@ -41,6 +39,7 @@ public class Force {
       int navalCTR = landCTR * 2;
       int airCTR = landCTR * 4;
       
+	  // return the combined cost of all LSs
       return ((landLS > 0) ? landCTR : 0) + ((navalLS > 0) ? navalCTR : 0) + ((airLS > 0) ? airCTR : 0);
     }
     
@@ -49,6 +48,7 @@ public class Force {
       int navalCTM = landCTM * 2;
       int airCTM = landCTM * 4;
       
+	  // return the combined cost of all LSs
       return ((landLS > 0) ? landCTM : 0) + ((navalLS > 0) ? navalCTM : 0) + ((airLS > 0) ? airCTM : 0);
     }
   }

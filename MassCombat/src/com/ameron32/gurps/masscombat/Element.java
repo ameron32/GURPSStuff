@@ -176,11 +176,19 @@ public class Element {
   //****************************************
 
   public static class Feature {
-    
+  	
+	String name;
+	float customCostToRaiseMod;
+	float customCostToMaintainMod;
+	String description;
+	float tsMod;
+	// Requirement: not sure how to implement
+	// Advantage: needs implementation of unique advantages
   }
   
   public static class SpecialClass {
-    String name;
+
+	String name;
     SpecialClass.Type type;
     
     public static SpecialClass newInstance(String name, SpecialClass.Type type) {

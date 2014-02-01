@@ -1,16 +1,18 @@
 package com.ameron32.gurps.masscombat;
 
-public class BattleManager {
+
+public class BattleManager implements TurnBased {
 
 	boolean inBattle = false;
 	boolean canceled = false;
 	
+	public void onPrepare() {
 	
 	void prepare() {
 		initiativeCommand();
 	}
 	
-	void begin() {
+	public void onTurnBegin() {
 		inBattle = true;
 		beforeBattle();
 		while(inBattle) {
@@ -52,14 +54,26 @@ public class BattleManager {
 		determineCaptives();
 	}
 	
-	void conclude() {
+	public void onFinish() {
 		inBattle = false;
 	}
 	
-	void cancel() {
+	public void onCancel() {
 		inBattle = false;
 		canceled = true;
 	}
 	
+
+	public void onTurnEnd(){};
 	
+	public void onOpponentTurnBegin(){};
+
+	public void onOpponentTurnEnd(){};
+
+	public void onAllyTurnBegin(){};
+
+	public void onAllyTurnEnd(){};
+
+	
+
 }

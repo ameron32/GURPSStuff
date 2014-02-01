@@ -107,26 +107,26 @@ public static final boolean DEBUG = false;
     store("Flying Beasts; 1; Air,T1; 2; SA; 120K; 40K; 0");
     store("Flying Cavalry; 2; Air,F; 2; SA; 600K; 60K; 1");
     store("Flying Infantry; 2; Air,Rec; 1; Foot,SA; 60K; 20K; 0");
-    store("Flying Leviathan; 150; Air,T10; –; SA; 1000K; 40K; 0");
+    store("Flying Leviathan; 150; Air,T10; –; SA; 1M; 40K; 0");
     store("Flying Mages; 5; Air,Art,C3I,F,Rec; 1; Foot,SA; 300K; 60K; 1");
     store("Giant Flying Monster; 15; Air; 8; SA; 800K; 40K; 0");
     store("Giant Monster; 40; Arm; 8; Foot; 800K; 40K; 0");
     store("Giants; 20; Arm,Art,Eng; 8; Foot; 800K; 40K; 0");
-    store("Leviathan; 250; Nav,T10; –; Sea; 10000K; 400K; 0");
+    store("Leviathan; 250; Nav,T10; –; Sea; 10M; 400K; 0");
     store("Ogres; 8; –; 4; Foot; 80K; 8K; 0");
-    store("Sea Monster; 20; Nav,T1; –; Sea; 1000K; 20K; 0");
+    store("Sea Monster; 20; Nav,T1; –; Sea; 1M; 20K; 0");
     store("Titan; 400; Arm,Art,Eng; –; Foot; 800K; 40K; 0");
 
     store("Boat; 0; T1; 1; Coast; 5K; 0.5K; 1");
     store("Brig; 6; Nav,Art,T6; –; Sea; 150K; 15K; 4");
     store("Cog; 4; T5; –; Sea; 75K; 7.5K; 3");
-    store("Frigate; 150; Nav,Art,T4; –; Sea; 1000K; 50K; 5");
+    store("Frigate; 150; Nav,Art,T4; –; Sea; 1M; 50K; 5");
     store("Galleon; 30; Nav,Art,T6; –; Sea; 750K; 75K; 4");
     store("Large Boat; 0; T2; 1; Coast; 10K; 1K; 1");
     store("Light Galley; 3; T1; –; Coast; 70K; 14K; 1");
     store("Longship; 3; T7; –; Coast; 50K; 10K; 2");
     store("Merchant Galley; 4; Nav,T5; –; Coast; 600K; 60K; 2");
-    store("Ship-of-the-Line; 300; Nav,Art,T10; –; Sea; 4000K; 400K; 5");
+    store("Ship-of-the-Line; 300; Nav,Art,T10; –; Sea; 4M; 400K; 5");
     store("War Galley; 10; Nav,T3; –; Coast; 500K; 100K; 2");
 
   }
@@ -262,12 +262,12 @@ public static final boolean DEBUG = false;
     
     // RAISE
     mRaise = 0;
-    mRaise = convertKto1000(pieces[raise]);
+    mRaise = convertIfNeeded(pieces[raise]);
     
     
     // MAINTAIN
     mMaintain = 0;
-    mMaintain = convertKto1000(pieces[maintain]);
+    mMaintain = convertIfNeeded(pieces[maintain]);
     
         
     // TL
@@ -320,13 +320,19 @@ public static final boolean DEBUG = false;
   
   /**
    * Helper method.
-   * @param intWithK String containing a number with trailing K to convert to 1000. Or no K, that's fine too.
-   * @return cropped Integer multiplied by 1,000
+   * @param intToConvert String containing a number with trailing K or M 
+   * to convert to 1,000 or 1,000,000. Or no K, that's fine too.
+   * @return cropped Integer multiplied by 1,000 or 1,000,000
    */
-  int convertKto1000(String intWithK) {
-    if (intWithK.contains("K") || intWithK.contains("k")) {
-      intWithK = intWithK.substring(0, intWithK.length() - 1);
+  int convertIfNeeded(String intToConvert) {
+    if (intToConvert.contains("M") || intToConvert.contains("m")) {
+      intToConvert = intToConvert.substring(0, intToConvert.length() - 1);
+      return Math.round((Float.parseFloat(intToConvert) * 1000000));
     }
-    return Math.round((Float.parseFloat(intWithK) * 1000));
+    if (intToConvert.contains("K") || intToConvert.contains("k")) {
+      intToConvert = intToConvert.substring(0, intToConvert.length() - 1);
+      return Math.round((Float.parseFloat(intToConvert) * 1000));
+    }
+    return Math.round((Float.parseFloat(intToConvert)) * 1);  
   }
 }
