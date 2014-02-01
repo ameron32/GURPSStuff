@@ -3,6 +3,8 @@ package com.ameron32.gurps.masscombat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ameron32.gurps.masscombat.Characters.Leader;
+
 public class Force {
   
   // *** FIGHTING FORCE
