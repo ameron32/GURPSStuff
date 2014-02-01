@@ -30,6 +30,7 @@ public class MCLibraryTest extends AndroidTestCase {
   public void testGetElement() {
     for (int i = 0; i < mcLibrary.getStandardElementsSize(); i++) {
       Log.d(TAG, mcLibrary.getElement(i).elementType);
+      System.out.println(mcLibrary.getElement(i).toString());
     }
 //    fail("Not yet implemented"); // TODO
   }
