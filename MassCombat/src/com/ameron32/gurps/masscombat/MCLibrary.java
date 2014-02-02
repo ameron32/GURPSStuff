@@ -117,27 +117,33 @@ public class MCLibrary {
   
   int elementSequenceKey = 0;
   void store(String elementCode) {
+    
     standardElements.put(elementSequenceKey, Element.Auto.generateLibFrom(elementCode));
     elementSequenceKey++;
   }
   
   void storeSC(SpecialClass.Type type, String name) {
+    
     standardSpecialClassTypes.put(type, SpecialClass.newInstance(name, type));
   }
   
   void storeM(Mobility.Type type, String name) {
+    
     standardMobilityTypes.put(type, Mobility.newInstance(name, type));
   }
   
   public Element getElement(int key) {
+    
     return standardElements.get(key);
   }
   
   public int getStandardElementsSize() {
+    
     return standardElements.size();
   }
 
   public static SpecialClass[] getSpecialClasses(SpecialClass.Type... types) {
+    
     SpecialClass[] classes = new SpecialClass[types.length];
     for (int i = 0; i < types.length; i++) {
       classes[i] = standardSpecialClassTypes.get(types[i]);
@@ -146,6 +152,7 @@ public class MCLibrary {
   }
   
   public static Mobility[] getMobility(Mobility.Type... types) {
+    
     Mobility[] mobilities = new Mobility[types.length];
     for (int i = 0; i < types.length; i++) {
       mobilities[i] = standardMobilityTypes.get(types[i]);
@@ -153,9 +160,4 @@ public class MCLibrary {
     return mobilities;
   }
   
-  
-  
-  
-  
-
 }

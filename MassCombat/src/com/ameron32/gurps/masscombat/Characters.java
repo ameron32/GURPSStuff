@@ -5,7 +5,8 @@ import java.util.*;
 public class Characters {
 	
 	public static class Character {
-		public String name;
+		
+	  public String name;
 		
 		protected Skill strategy = new Skill("Strategy");
 		protected Skill leadership = new Skill("Leadership");
@@ -13,17 +14,11 @@ public class Characters {
 		protected Skill administration = new Skill("Administration");
 		
 		private Character() {}
-		
-		class Skill {
-			/** simple constructor */
-		  Skill(String name) {this.name = name;}
-			public String name;
-			public int level;
-		}
 	}
 	
 	public static class Leader extends Character {
-		Type type;
+		
+	  Type type;
 		Force ofForce;
 		
 		/** Random Leader factory */
@@ -46,8 +41,10 @@ public class Characters {
 		}
 		
 		private Leader() {}
+		
 		public void appointLeader(Leader.Type type, Force ofForce) {
-			this.type = type;
+			
+		  this.type = type;
 			this.ofForce = ofForce;
 		} 
 		
@@ -59,4 +56,12 @@ public class Characters {
 	public static class Hero extends Character {
 		
 	}
+	
+  public static class Skill {
+    
+    /** simple constructor */
+    Skill(String name) {this.name = name;}
+    public String name;
+    public int level;
+  }
 }
