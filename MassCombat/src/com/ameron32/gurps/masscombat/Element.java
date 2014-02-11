@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class Element {
   public static final String TAG = "Element";
-  public static final boolean DEBUG = true;
+  public static final boolean DEBUG = false;
   
 
     String name = "";
@@ -183,7 +183,8 @@ public class Element {
   //****************************************
 
   public static class Feature {
-  	
+  	// NOTE: Neutralizes is currently "AntiSpecialClass"
+    
     String name;
     float  customCostToRaiseMod;
     float  customCostToMaintainMod;
@@ -203,9 +204,16 @@ public class Element {
 
     String name;
     SpecialClass.Type type;
+    boolean isAnti;
     
-    public static SpecialClass newInstance(String name, SpecialClass.Type type) {
-      return new SpecialClass(type, name);
+    public static SpecialClass newInstance(String name, SpecialClass.Type type, boolean isAnti) {
+      SpecialClass sc = new SpecialClass(type, name);
+      sc.setAnti(isAnti);
+      return sc; 
+    }
+    
+    public void setAnti(boolean isAnti) {
+      this.isAnti = isAnti;
     }
     
     private SpecialClass(SpecialClass.Type type, String name) {
@@ -219,7 +227,7 @@ public class Element {
     
     @Override
     public String toString() {
-      return name + "/" + type.name();
+      return ((isAnti) ? "Anti-" + name + "/" + "(" + type.name() + ")" : name + "/" + type.name());
     }
   }
   
@@ -400,24 +408,38 @@ public class Element {
       // SPECIALCLASSES
       // split specialClasses if more than 1 separated by comma
       String[] sSpecialClasses;
-      SpecialClass.Type[] scSpecialClasses;
+      List<SpecialClass.Type> scSpecialClasses = new ArrayList<SpecialClass.Type>();
+      List<SpecialClass.Type> scAntiSpecialClasses = new ArrayList<SpecialClass.Type>();
       sSpecialClasses = pieces[specialClasses].split(",");
-      scSpecialClasses = new SpecialClass.Type[sSpecialClasses.length];
+//      scSpecialClasses = new SpecialClass.Type[sSpecialClasses.length];
       mCarryingCapacity = 0;
       for (int k = 0; k < sSpecialClasses.length; k++) {
         sSpecialClasses[k] = sSpecialClasses[k].trim();
         if (sSpecialClasses[k].startsWith("T")) {
-          scSpecialClasses[k] = SpecialClass.Type.valueOf("T");
+          scSpecialClasses.add(SpecialClass.Type.valueOf("T"));
           mCarryingCapacity = Integer.decode(sSpecialClasses[k].substring(1));
         } 
         else if (sSpecialClasses[k].equalsIgnoreCase("–")) {
-          scSpecialClasses[k] = SpecialClass.Type.None;
+          scSpecialClasses.add(SpecialClass.Type.None);
         } 
         else {
-          scSpecialClasses[k] = SpecialClass.Type.valueOf(sSpecialClasses[k]);
+          if (sSpecialClasses[k].contains("(") && sSpecialClasses[k].contains(")")) {
+            // TODO fix me
+            scAntiSpecialClasses.add(SpecialClass.Type.valueOf(sSpecialClasses[k].substring(1, sSpecialClasses[k].length() - 1)));
+          } 
+          else {
+            scSpecialClasses.add(SpecialClass.Type.valueOf(sSpecialClasses[k]));
+          }
         }
       }
-      mSpecialClasses = MCLibrary.getSpecialClasses(scSpecialClasses);
+      List<SpecialClass> combiner = new ArrayList<SpecialClass>();
+      for (int i = 0; i < scSpecialClasses.size(); i++) {
+        combiner.add(MCLibrary.getSpecialClass(scSpecialClasses.get(i)));
+      }
+      for (int j = 0; j < scAntiSpecialClasses.size(); j++) {
+        combiner.add(MCLibrary.getAntiSpecialClass(scAntiSpecialClasses.get(j)));
+      }
+      mSpecialClasses = combiner.toArray(new SpecialClass[combiner.size()]);
       
       
       // WT

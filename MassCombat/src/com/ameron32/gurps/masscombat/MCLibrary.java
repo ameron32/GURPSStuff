@@ -14,6 +14,7 @@ public class MCLibrary {
   
   
   static Map<SpecialClass.Type, SpecialClass> standardSpecialClassTypes = new TreeMap<SpecialClass.Type, SpecialClass>();
+  static Map<SpecialClass.Type, SpecialClass> standardAntiSpecialClassTypes = new TreeMap<SpecialClass.Type, SpecialClass>();
   static Map<Mobility.Type, Mobility> standardMobilityTypes = new TreeMap<Mobility.Type, Mobility>();
   
   static Map<Integer, Element> standardElements = new TreeMap<Integer, Element>();
@@ -76,7 +77,7 @@ public class MCLibrary {
     store("Miners 5; 4; Eng; 1; Foot; 30K; 6K; 5");
     store("Mounts; 0; T1; 1; Mtd; 60K; 12K; 1");
     store("Musketeers; 2; F; 1; Foot; 30K; 6K; 4");
-    // store("Pikemen; 4; (Cv); 1; Foot; 60K; 12K; 2");
+    store("Pikemen; 4; (Cv); 1; Foot; 60K; 12K; 2"); // test me
     // TODO needs (Cv) resolved
     store("Skirmishers; 2; F,Rec; 1; Foot; 30K; 6K; 5");
     store("Stone-Age Warriors; 1; Rec; 1; Foot; 25K; 5K; 0");
@@ -110,7 +111,6 @@ public class MCLibrary {
     store("Merchant Galley; 4; Nav,T5; –; Coast; 600K; 60K; 2");
     store("Ship-of-the-Line; 300; Nav,Art,T10; –; Sea; 4M; 400K; 5");
     store("War Galley; 10; Nav,T3; –; Coast; 500K; 100K; 2");
-
   }
   
   
@@ -122,15 +122,30 @@ public class MCLibrary {
     elementSequenceKey++;
   }
   
+  /**
+   * Stores a SpecialClass and an AntiSpecialClass for each defined SpecialClass Type
+   * 
+   * @param type
+   * @param name
+   */
   void storeSC(SpecialClass.Type type, String name) {
     
-    standardSpecialClassTypes.put(type, SpecialClass.newInstance(name, type));
+    // store the SpecialClass
+    standardSpecialClassTypes.put(type, SpecialClass.newInstance(name, type, false));
+    
+    // store the AntiSpecialClass
+    standardAntiSpecialClassTypes.put(type, SpecialClass.newInstance(name, type, true));
   }
   
   void storeM(Mobility.Type type, String name) {
     
     standardMobilityTypes.put(type, Mobility.newInstance(name, type));
   }
+  
+  
+  
+  
+  
   
   public Element getElement(int key) {
     
@@ -142,13 +157,14 @@ public class MCLibrary {
     return standardElements.size();
   }
 
-  public static SpecialClass[] getSpecialClasses(SpecialClass.Type... types) {
+  public static SpecialClass getSpecialClass(SpecialClass.Type type) {
     
-    SpecialClass[] classes = new SpecialClass[types.length];
-    for (int i = 0; i < types.length; i++) {
-      classes[i] = standardSpecialClassTypes.get(types[i]);
-    }
-    return classes;
+    return standardSpecialClassTypes.get(type);
+  }
+  
+  public static SpecialClass getAntiSpecialClass(SpecialClass.Type type) {
+    
+    return standardAntiSpecialClassTypes.get(type);
   }
   
   public static Mobility[] getMobility(Mobility.Type... types) {
