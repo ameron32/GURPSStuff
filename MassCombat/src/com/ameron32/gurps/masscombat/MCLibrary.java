@@ -5,6 +5,7 @@ import java.util.TreeMap;
 
 import android.util.Log;
 
+import com.ameron32.gurps.masscombat.Element.Feature;
 import com.ameron32.gurps.masscombat.Element.Mobility;
 import com.ameron32.gurps.masscombat.Element.SpecialClass;
 
@@ -16,6 +17,8 @@ public class MCLibrary {
   static Map<SpecialClass.Type, SpecialClass> standardSpecialClassTypes = new TreeMap<SpecialClass.Type, SpecialClass>();
   static Map<SpecialClass.Type, SpecialClass> standardAntiSpecialClassTypes = new TreeMap<SpecialClass.Type, SpecialClass>();
   static Map<Mobility.Type, Mobility> standardMobilityTypes = new TreeMap<Mobility.Type, Mobility>();
+  
+  static Map<Feature.Type, Feature> standardFeatures = new TreeMap<Feature.Type, Feature>();
   
   static Map<Integer, Element> standardElements = new TreeMap<Integer, Element>();
   
@@ -34,6 +37,29 @@ public class MCLibrary {
     storeSC(SpecialClass.Type.Rec, "Recon");
     storeSC(SpecialClass.Type.T, "Transport");
     storeSC(SpecialClass.Type.None, "None");
+    
+    // GENERATE FEATURE TYPES FROM MASS COMBAT BOOK
+    storeF(Feature.Type.Airborne, "Airborne", 20 , 20, null);
+    storeF(Feature.Type.AllWeather, "All-Weather", 20 , 20, null);
+    storeF(Feature.Type.Disloyal, "Disloyal", 0, 0, null);
+    storeF(Feature.Type.Fanatic, "Fanatic", 0, 0, null);
+    storeF(Feature.Type.Flagship, "Flagship", 0, 0, null);
+    storeF(Feature.Type.Hero, "Hero", 0 , 0, null);
+    storeF(Feature.Type.Hovercraft, "Hovercraft", 80 , 80, null);
+    storeF(Feature.Type.Impetuous, "Impetuous",0 , 0, null);
+    storeF(Feature.Type.Levy, "Levy", 0 , 0, null);
+    storeF(Feature.Type.Marine, "Marine", 20 , 20, null);
+    storeF(Feature.Type.Mercenary, "Mercenary", 0 , 0, null);
+    storeF(Feature.Type.Night, "Night", 20 , 20, null);
+    storeF(Feature.Type.Nocturnal, "Nocturnal", 0 , 0, null);
+    storeF(Feature.Type.Sealed, "Sealed", 20 , 20, null);
+    storeF(Feature.Type.SuperSoldier, "Super-Soldier", 200 , 200, null);
+    storeF(Feature.Type.TerrainArctic, "Terrain: Arctic", 20 , 20, null);
+    storeF(Feature.Type.TerrainDesert, "Terrain: Desert", 20 , 20, null);
+    storeF(Feature.Type.TerrainJungle, "Terrain: Jungle", 20 , 20, null);
+    storeF(Feature.Type.TerrainMountain, "Terrain: Mountain", 20 , 20, null);
+    storeF(Feature.Type.TerrainSwampland, "Terrain: Swampland", 20 , 20, null);
+    storeF(Feature.Type.TerrainWoodlands, "Terrain: Woodlands", 20 , 20, null);
   	  
     // GENERATE MOBILITY TYPES FROM MASS COMBAT BOOK
     storeM(Mobility.Type.None, "Must be transported");
@@ -78,7 +104,6 @@ public class MCLibrary {
     store("Mounts; 0; T1; 1; Mtd; 60K; 12K; 1");
     store("Musketeers; 2; F; 1; Foot; 30K; 6K; 4");
     store("Pikemen; 4; (Cv); 1; Foot; 60K; 12K; 2"); // test me
-    // TODO needs (Cv) resolved
     store("Skirmishers; 2; F,Rec; 1; Foot; 30K; 6K; 5");
     store("Stone-Age Warriors; 1; Rec; 1; Foot; 25K; 5K; 0");
     store("War Beast; 20; Arm; 4; Foot; 400K; 80K; 2");
@@ -135,6 +160,11 @@ public class MCLibrary {
     
     // store the AntiSpecialClass
     standardAntiSpecialClassTypes.put(type, SpecialClass.newInstance(name, type, true));
+  }
+  
+  void storeF(Feature.Type type, String name, int costToRaise, int costToMaintain, String description) {
+    
+    standardFeatures.put(type, Feature.newInstance(name, type, costToRaise, costToMaintain, description));
   }
   
   void storeM(Mobility.Type type, String name) {
