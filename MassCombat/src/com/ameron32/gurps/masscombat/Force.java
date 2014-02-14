@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ameron32.gurps.masscombat.Characters.Leader;
+import com.ameron32.gurps.masscombat.Element.Mobility;
 
 public class Force {
   
@@ -17,7 +18,20 @@ public class Force {
   // *** SUPPORT *********************
   LogisticForce tail;
   
-  
+  int getSpeed(Terrain.Type overTerrain) {
+    int speed = 9999;
+    for (Unit unit : units) {
+      for (Mobility mobility : unit.element.mobilities) {
+        // determine the fastest speed this unit can travel over this terrain
+        int bestSpeed = mobility.determineBestSpeed(overTerrain);
+        // if this is the slowest unit in the force, this becomes the base speed
+        if (bestSpeed < speed) speed = bestSpeed;
+      }
+    }
+    
+    // the fastest eligible speed of the slowest unit sets the speed
+    return speed;
+  }
   
   
   
@@ -25,8 +39,9 @@ public class Force {
   /** Units allow descriptive subgroups for Forces */
   public static class Unit {
     
-    int     quantity;
-    Element element;
+      String name;
+    int      quantity;
+    Element  element;
   }
   
   public static class LogisticForce {

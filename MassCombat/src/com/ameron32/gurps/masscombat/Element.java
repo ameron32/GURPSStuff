@@ -276,16 +276,24 @@ public class Element {
   }
   
   public static class Mobility {
+    public static int SPEED_OFFROAD = 0;
+    public static int SPEED_OPENWATER = 0;
+    public static int SPEED_COAST = 0;
+    public static int SPEED_ROAD = 1;
+    public static int SPEED_GOOD_ROAD = 2;
+    
     String name;
     Mobility.Type type;
+    int[] speeds;
     
-    public static Mobility newInstance(String name, Mobility.Type type) {
-      return new Mobility(type, name);
+    public static Mobility newInstance(String name, Mobility.Type type, int[] speeds) {
+      return new Mobility(type, name, speeds);
     }
     
-    private Mobility(Mobility.Type type, String name) {
+    private Mobility(Mobility.Type type, String name, int[] speeds) {
       this.type = type;
       this.name = name;
+      this.speeds = speeds;
     }
     
     public enum Type {
@@ -296,11 +304,17 @@ public class Element {
     public String toString() {
       return name + "/" + type.name();
     }
+    
+    int determineBestSpeed(Terrain.Type overTerrain) {
+      int value = Terrain.getValue(overTerrain);
+      return speeds[value];
+    }
   }
   
   public int getCarryingCapacity() {
     return carryingCapacity;
   }
+  
   
   
   @Override
@@ -550,6 +564,30 @@ public class Element {
         return Math.round((Float.parseFloat(intToConvert) * 1000));
       }
       return Math.round((Float.parseFloat(intToConvert)) * 1);  
+    }
+    
+    
+    static int[] generateSpeedsFromInput(int[] input) {
+      int offroadOrOpenwater = -1;
+      int standardRoad = -1;
+      int goodRoad = -1;
+      
+      // reverse input
+      int[] revInput = new int[input.length];
+      for (int i = 0; i < input.length; i++) {
+        revInput[input.length - i - 1] = input[i]; 
+      }
+      input = revInput;
+      revInput = null;
+      
+      if (input.length > 0) 
+        offroadOrOpenwater = standardRoad = goodRoad = input[0];
+      if (input.length > 1) 
+        standardRoad = goodRoad = input[1];
+      if (input.length > 2) 
+        goodRoad = input[2];
+      
+      return new int[] { offroadOrOpenwater, standardRoad, goodRoad }; 
     }
     
   }

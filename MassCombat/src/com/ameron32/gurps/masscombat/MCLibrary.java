@@ -1,5 +1,8 @@
 package com.ameron32.gurps.masscombat;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -62,15 +65,15 @@ public class MCLibrary {
     storeF(Feature.Type.TerrainWoodlands, "Terrain: Woodlands", 20 , 20, null);
   	  
     // GENERATE MOBILITY TYPES FROM MASS COMBAT BOOK
-    storeM(Mobility.Type.None, "Must be transported");
-    storeM(Mobility.Type.Foot, "Foot");
-    storeM(Mobility.Type.Mech, "Mechanized");
-    storeM(Mobility.Type.Motor, "Motorized");
-    storeM(Mobility.Type.Mtd, "Mounted");
-    storeM(Mobility.Type.Coast, "Coast");
-    storeM(Mobility.Type.Sea, "Sea");
-    storeM(Mobility.Type.FA, "Fast Air");
-    storeM(Mobility.Type.SA, "Slow Air");
+    storeM(Mobility.Type.None, "Must be transported", 0);
+    storeM(Mobility.Type.Foot, "Foot", 20, 10);
+    storeM(Mobility.Type.Mech, "Mechanized", 80, 60);
+    storeM(Mobility.Type.Motor, "Motorized", 120, 60, 20);
+    storeM(Mobility.Type.Mtd, "Mounted", 30, 15);
+    storeM(Mobility.Type.Coast, "Coast", 160);
+    storeM(Mobility.Type.Sea, "Sea", 160);
+    storeM(Mobility.Type.FA, "Fast Air", 20, 10);
+    storeM(Mobility.Type.SA, "Slow Air", 20, 10);
       
     // GENERATE ELEMENTS FROM MASS COMBAT BOOK
     store("Balloon; (1); Air; 2; 0; 50K; 5K; 5");
@@ -167,9 +170,17 @@ public class MCLibrary {
     standardFeatures.put(type, Feature.newInstance(name, type, costToRaise, costToMaintain, description));
   }
   
-  void storeM(Mobility.Type type, String name) {
-    
-    standardMobilityTypes.put(type, Mobility.newInstance(name, type));
+  /**
+   * Store a Mobility for retrieval later.
+   * 
+   * @param type
+   * @param name
+   * @param speeds in MilesPerDay: off-road, standard road, good road 
+   */
+  void storeM(Mobility.Type type, String name, int... speeds) {
+
+    speeds = Element.Auto.generateSpeedsFromInput(speeds);
+    standardMobilityTypes.put(type, Mobility.newInstance(name, type, speeds));
   }
   
   
