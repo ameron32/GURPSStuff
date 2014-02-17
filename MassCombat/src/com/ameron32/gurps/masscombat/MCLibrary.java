@@ -55,6 +55,7 @@ public class MCLibrary {
     storeF(Feature.Type.Mercenary, "Mercenary", 0 , 0, null);
     storeF(Feature.Type.Night, "Night", 20 , 20, null);
     storeF(Feature.Type.Nocturnal, "Nocturnal", 0 , 0, null);
+    storeF(Feature.Type.Neutralize, "Neutralize", 25, 25, null);
     storeF(Feature.Type.Sealed, "Sealed", 20 , 20, null);
     storeF(Feature.Type.SuperSoldier, "Super-Soldier", 200 , 200, null);
     storeF(Feature.Type.TerrainArctic, "Terrain: Arctic", 20 , 20, null);
