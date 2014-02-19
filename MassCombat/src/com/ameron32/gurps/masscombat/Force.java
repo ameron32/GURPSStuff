@@ -18,7 +18,7 @@ public class Force {
   // *** SUPPORT *********************
   LogisticForce tail;
   
-  int getSpeed(Terrain.Type overTerrain) {
+  int getSpeed(Terrain overTerrain) {
     int speed = 9999;
     for (Unit unit : units) {
       for (Mobility mobility : unit.element.mobilities) {

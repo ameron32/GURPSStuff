@@ -5,8 +5,8 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
 
-public class MainActivity extends Activity {
-  
+public class MassCombatActivity extends Activity {
+  public static final String TAG = "MassCombatActivity";
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -22,4 +22,28 @@ public class MainActivity extends Activity {
     return true;
   }
   
+  
+  
+  
+  public static void log(int logType, String s) {
+    switch (logType) {
+    case Log.DEBUG:
+      Log.d(TAG, s);
+      break;
+    case Log.ERROR:
+      Log.e(TAG, s);
+      break;
+    case Log.INFO:
+      Log.i(TAG, s);
+      break;
+    case Log.VERBOSE:
+      Log.v(TAG, s);
+      break;
+    case Log.WARN:
+      Log.w(TAG, s);
+      break;
+    default:
+      Log.i(TAG, s);
+    }
+  }
 }

@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.ameron32.gurps.masscombat.Terrain.InvalidTerrainException;
+
 import android.util.Log;
 
 
 public class Element {
   public static final String TAG = "Element";
-  public static final boolean DEBUG = false;
+  private static final boolean mDebug = true;
   
 
     String name = "";
@@ -306,8 +308,16 @@ public class Element {
       return name + "/" + type.name();
     }
     
-    int determineBestSpeed(Terrain.Type overTerrain) {
-      int value = Terrain.getValue(overTerrain);
+    int determineBestSpeed(Terrain overTerrain) {
+      int value = 0;
+      try {
+        value = Terrain.getRoadValue(overTerrain);
+      } catch (InvalidTerrainException te) {
+        if (mDebug) {
+          MassCombatActivity.log(Log.ERROR, "Terrain [" + overTerrain.toString() + "] Failed.");
+        }
+        te.printStackTrace();
+      }
       return speeds[value];
     }
   }
@@ -382,7 +392,7 @@ public class Element {
       
       
       // DEBUG
-      if (DEBUG) {
+      if (mDebug) {
         StringBuilder sb = new StringBuilder();
         for (String piece: pieces) { sb.append(piece + "\n"); }
         Log.d(TAG, sb.toString());
