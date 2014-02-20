@@ -1,16 +1,14 @@
 package com.ameron32.gurps.masscombat;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import android.util.Log;
 
 import com.ameron32.gurps.masscombat.Element.Feature;
 import com.ameron32.gurps.masscombat.Element.Mobility;
 import com.ameron32.gurps.masscombat.Element.SpecialClass;
+import com.ameron32.gurps.masscombat.Force.EncampedModifier;
+import com.ameron32.gurps.masscombat.Force.MobileModifier;
+import com.ameron32.gurps.masscombat.Force.Modifier;
 
 public class MCLibrary {
   public static final String TAG = "MCLibrary";
@@ -20,13 +18,22 @@ public class MCLibrary {
   static Map<SpecialClass.Type, SpecialClass> standardSpecialClassTypes = new TreeMap<SpecialClass.Type, SpecialClass>();
   static Map<SpecialClass.Type, SpecialClass> standardAntiSpecialClassTypes = new TreeMap<SpecialClass.Type, SpecialClass>();
   static Map<Mobility.Type, Mobility> standardMobilityTypes = new TreeMap<Mobility.Type, Mobility>();
-  
   static Map<Feature.Type, Feature> standardFeatures = new TreeMap<Feature.Type, Feature>();
-  
   static Map<Integer, Element> standardElements = new TreeMap<Integer, Element>();
+  static Map<MobileModifier.Type, MobileModifier> standardMobileModifiers = new TreeMap<MobileModifier.Type, MobileModifier>();
+  static Map<EncampedModifier.Type, EncampedModifier> standardEncampedModifiers = new TreeMap<EncampedModifier.Type, EncampedModifier>();
+  
   
   // create standard Elements
   public MCLibrary() {
+    
+    // GENERATE MOBILE FORCE MODIFIERS
+    storeMM(MobileModifier.Type.Flying, "Flying", null);
+    // TODO: replace null with functioning "modifiers"
+    
+    // GENERATE ENCAMPED FORCE MODIFIERS
+    storeEM(EncampedModifier.Type.Bunkered, "Bunkered", null);
+    // TODO: replace null with functioning "modifiers"
 
     // GENERATE SPECIALCLASSES FROM MASS COMBAT BOOK
     storeSC(SpecialClass.Type.Air, "Air Combat");
@@ -66,15 +73,15 @@ public class MCLibrary {
     storeF(Feature.Type.TerrainWoodlands, "Terrain: Woodlands", 20 , 20, null);
   	  
     // GENERATE MOBILITY TYPES FROM MASS COMBAT BOOK
-    storeM(Mobility.Type.None, "Must be transported", 0);
-    storeM(Mobility.Type.Foot, "Foot", 20, 10);
-    storeM(Mobility.Type.Mech, "Mechanized", 80, 60);
-    storeM(Mobility.Type.Motor, "Motorized", 120, 60, 20);
-    storeM(Mobility.Type.Mtd, "Mounted", 30, 15);
-    storeM(Mobility.Type.Coast, "Coast", 160);
-    storeM(Mobility.Type.Sea, "Sea", 160);
-    storeM(Mobility.Type.FA, "Fast Air", 20, 10);
-    storeM(Mobility.Type.SA, "Slow Air", 20, 10);
+    storeM(Mobility.Type.None, "Must be transported", "la0");
+    storeM(Mobility.Type.Foot, "Foot", "dr20, la10");
+    storeM(Mobility.Type.Mech, "Mechanized", "dr80, la60");
+    storeM(Mobility.Type.Motor, "Motorized", "gr120, dr60, la20");
+    storeM(Mobility.Type.Mtd, "Mounted", "dr30, la15");
+    storeM(Mobility.Type.Coast, "Coast", "co160");
+    storeM(Mobility.Type.Sea, "Sea", "wa160");
+    storeM(Mobility.Type.FA, "Fast Air", "dr20, la10");
+    storeM(Mobility.Type.SA, "Slow Air", "dr20, la10");
       
     // GENERATE ELEMENTS FROM MASS COMBAT BOOK
     store("Balloon; (1); Air; 2; 0; 50K; 5K; 5");
@@ -178,10 +185,22 @@ public class MCLibrary {
    * @param name
    * @param speeds in MilesPerDay: off-road, standard road, good road 
    */
-  void storeM(Mobility.Type type, String name, int... speeds) {
+  Mobility storeM(Mobility.Type type, String name, String sSpeeds) {
 
-    speeds = Element.Auto.generateSpeedsFromInput(speeds);
-    standardMobilityTypes.put(type, Mobility.newInstance(name, type, speeds));
+    int[] speeds = Element.Auto.generateSpeedsFromInput(sSpeeds);
+    Mobility m = Mobility.newInstance(name, type, speeds);
+    standardMobilityTypes.put(type, m);
+    return m;
+  }
+  
+  void storeMM(MobileModifier.Type type, String name, Modifier... modifiers) {
+    
+    standardMobileModifiers.put(type, MobileModifier.newMobileModifier(name, type, modifiers));
+  }
+  
+  void storeEM(EncampedModifier.Type type, String name, Modifier... modifiers) {
+    
+    standardEncampedModifiers.put(type, EncampedModifier.newEncampedModifier(name, type, modifiers));
   }
   
   

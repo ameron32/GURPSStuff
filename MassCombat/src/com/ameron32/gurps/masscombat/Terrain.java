@@ -7,7 +7,8 @@ public class Terrain {
   Road.Type roadType;
   Water.Type waterType;
   
-  
+  // *** CONSTRUCTORS
+  // ***********************************************************************************
   /**
    * Full constructor.
    * 
@@ -29,6 +30,9 @@ public class Terrain {
     this.roadType = road;
     this.waterType = water;
   }
+  
+  // *** STATIC CALLS
+  // ***********************************************************************************
   
   static int getRoadValue(Terrain terrain) throws InvalidTerrainException {
     Road.Type type = terrain.roadType;
@@ -120,6 +124,11 @@ public class Terrain {
     return value;
   }
   
+
+  
+  // *** SUB-CLASSES
+  // ***********************************************************************************
+  
   public enum Type {
 //    OpenWater, OffRoad, Road, GoodRoad, Coast,
       Arctic, BuiltUpAreas, BuiltUpAreasFromWithinArea, Desert, Hills, Island, Beach, Jungle, 
@@ -147,8 +156,23 @@ public class Terrain {
     
     
   }
+  
+  
+  // *** INSTANCE CALLS
+  // ***********************************************************************************
+  
+  boolean hasRoad() {
+    return (!(roadType == Road.Type.None));
+  }
+  
+  boolean isWater() {
+    return (!(waterType == Water.Type.None));
+  }
+  
 
   
+  // *** OBJECT / FIELD CALLS
+  // ***********************************************************************************
   
   @Override
   public String toString() {

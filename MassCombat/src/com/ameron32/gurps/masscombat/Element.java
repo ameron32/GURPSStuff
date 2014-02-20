@@ -279,11 +279,12 @@ public class Element {
   }
   
   public static class Mobility {
-    public static int SPEED_OFFROAD = 0;
-    public static int SPEED_OPENWATER = 0;
-    public static int SPEED_COAST = 0;
-    public static int SPEED_ROAD = 1;
-    public static int SPEED_GOOD_ROAD = 2;
+    
+    public static int SPEED_GOOD_ROAD = 0;
+    public static int SPEED_DIRT_ROAD = 1;
+    public static int SPEED_LAND      = 2;
+    public static int SPEED_COAST     = 3;
+    public static int SPEED_OPENWATER = 4;
     
     String name;
     Mobility.Type type;
@@ -311,7 +312,9 @@ public class Element {
     int determineBestSpeed(Terrain overTerrain) {
       int value = 0;
       try {
-        value = Terrain.getRoadValue(overTerrain);
+        if (overTerrain.hasRoad()) {
+          value = Terrain.getRoadValue(overTerrain);
+        }
       } catch (InvalidTerrainException te) {
         if (mDebug) {
           MassCombatActivity.log(Log.ERROR, "Terrain [" + overTerrain.toString() + "] Failed.");
@@ -578,27 +581,56 @@ public class Element {
     }
     
     
-    static int[] generateSpeedsFromInput(int[] input) {
-      int offroadOrOpenwater = -1;
-      int dirtRoad = -1;
-      int goodRoad = -1;
+    static int[] generateSpeedsFromInput(String input) {
+      /* REMOVE
+          int offroadOrOpenwater = -1;
+          int dirtRoad = -1;
+          int goodRoad = -1;
+          
+          // reverse input
+          int[] revInput = new int[input.length];
+          for (int i = 0; i < input.length; i++) {
+            revInput[input.length - i - 1] = input[i]; 
+          }
+          input = revInput;
+          revInput = null;
+          
+          if (input.length > 0) 
+            offroadOrOpenwater = dirtRoad = goodRoad = input[0];
+          if (input.length > 1) 
+            dirtRoad = goodRoad = input[1];
+          if (input.length > 2) 
+            goodRoad = input[2];
+        */
+  
+ 
       
-      // reverse input
-      int[] revInput = new int[input.length];
-      for (int i = 0; i < input.length; i++) {
-        revInput[input.length - i - 1] = input[i]; 
+      int goodRoad = 0;
+      int dirtRoad = 0;
+      int land = 0;
+      int coast = 0;
+      int water = 0;
+      
+      String[] sSpeeds = input.split(",");
+      for (int i = sSpeeds.length - 1; i > -1; i--) {
+        String sSpeed = sSpeeds[i];
+        sSpeed = sSpeed.trim();
+        String type = sSpeed.substring(0, 2);
+        int speed = Integer.decode(sSpeed.substring(2));
+        
+        if (type.equalsIgnoreCase("la")) land = dirtRoad = goodRoad = speed;
+        if (type.equalsIgnoreCase("co")) coast = water = speed;
+        if (type.equalsIgnoreCase("dr")) dirtRoad = goodRoad = speed;
+        if (type.equalsIgnoreCase("gr")) goodRoad = speed;
+        if (type.equalsIgnoreCase("wa")) water = speed;
+        
+        if (mDebug)
+            MassCombatActivity.log(Log.INFO, goodRoad + "," + dirtRoad + "," + land + "," + coast + "," + water);
       }
-      input = revInput;
-      revInput = null;
       
-      if (input.length > 0) 
-        offroadOrOpenwater = dirtRoad = goodRoad = input[0];
-      if (input.length > 1) 
-        dirtRoad = goodRoad = input[1];
-      if (input.length > 2) 
-        goodRoad = input[2];
-      
-      return new int[] { offroadOrOpenwater, dirtRoad, goodRoad }; 
+      if (mDebug)
+          MassCombatActivity.log(Log.INFO, "**********************************");
+      return new int[] { goodRoad, dirtRoad, land, coast, water }; 
     }
     
   }
