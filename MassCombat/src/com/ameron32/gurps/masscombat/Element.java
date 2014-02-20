@@ -329,6 +329,13 @@ public class Element {
     return carryingCapacity;
   }
   
+  public boolean isSpecialClass(SpecialClass.Type type) {
+    for (SpecialClass sc : specialClasses) {
+      if (sc.type == type) return true;
+    }
+    return false;
+  }
+  
   
   
   @Override

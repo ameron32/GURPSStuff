@@ -3,6 +3,8 @@ package com.ameron32.gurps.masscombat;
 
 public class BattleManager implements TurnBased {
 
+  BattleEnvironment environment;
+  
 	boolean inBattle = false;
 	boolean canceled = false;
 	

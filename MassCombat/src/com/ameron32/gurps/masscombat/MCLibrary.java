@@ -6,9 +6,11 @@ import java.util.TreeMap;
 import com.ameron32.gurps.masscombat.Element.Feature;
 import com.ameron32.gurps.masscombat.Element.Mobility;
 import com.ameron32.gurps.masscombat.Element.SpecialClass;
-import com.ameron32.gurps.masscombat.Force.EncampedModifier;
-import com.ameron32.gurps.masscombat.Force.MobileModifier;
-import com.ameron32.gurps.masscombat.Force.Modifier;
+import com.ameron32.gurps.masscombat.modifiers.Modifications.Condition;
+import com.ameron32.gurps.masscombat.modifiers.Modifications.Effect;
+import com.ameron32.gurps.masscombat.modifiers.Modifications.EncampedModifier;
+import com.ameron32.gurps.masscombat.modifiers.Modifications.MobileModifier;
+import com.ameron32.gurps.masscombat.modifiers.Modifications.Modifier;
 
 public class MCLibrary {
   public static final String TAG = "MCLibrary";
@@ -22,10 +24,30 @@ public class MCLibrary {
   static Map<Integer, Element> standardElements = new TreeMap<Integer, Element>();
   static Map<MobileModifier.Type, MobileModifier> standardMobileModifiers = new TreeMap<MobileModifier.Type, MobileModifier>();
   static Map<EncampedModifier.Type, EncampedModifier> standardEncampedModifiers = new TreeMap<EncampedModifier.Type, EncampedModifier>();
-  
+  static Map<Condition.Type, Condition> standardConditions = new TreeMap<Condition.Type, Condition>();
+  static Map<Effect.Type, Effect> standardEffects = new TreeMap<Effect.Type, Effect>();
   
   // create standard Elements
   public MCLibrary() {
+    
+    // GENERATE CONDITIONS
+    storeCondition(Condition.Type.AlwaysTrue, "Always True", new Condition() {
+      
+      @Override
+      public boolean met(BattleEnvironment environment) {
+        // always true
+        return true;
+      }
+    });
+    
+    // GENERATE EFFECTS
+    storeEffect(Effect.Type.DoNothing, "Do Nothing", new Effect() {
+      
+      @Override
+      public void applyEffect(BattleEnvironment environment) {
+        // do nothing
+      }
+    });
     
     // GENERATE MOBILE FORCE MODIFIERS
     storeMM(MobileModifier.Type.Flying, "Flying", null);
@@ -203,7 +225,15 @@ public class MCLibrary {
     standardEncampedModifiers.put(type, EncampedModifier.newEncampedModifier(name, type, modifiers));
   }
   
+  void storeCondition(Condition.Type type, String name, Condition condition) {
+    
+    standardConditions.put(type, condition);
+  }
   
+  void storeEffect(Effect.Type type, String name, Effect effect) {
+    
+    standardEffects.put(type, effect);
+  }
   
   
   
