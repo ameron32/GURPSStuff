@@ -1,12 +1,15 @@
 package com.ameron32.gurps.masscombat;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import com.ameron32.gurps.masscombat.Characters.Leader;
 import com.ameron32.gurps.masscombat.Element.Mobility;
+import com.ameron32.gurps.masscombat.Element.SpecialClass;
 import com.ameron32.gurps.masscombat.modifiers.Modifications.EncampedModifier;
 import com.ameron32.gurps.masscombat.modifiers.Modifications.MobileModifier;
 
@@ -23,6 +26,14 @@ public class Force {
   LogisticForce    tail;
   
 
+  SpecialClass[] getSpecialClasses() {
+    Set<SpecialClass> allSpecialClasses = new HashSet<SpecialClass>();
+    for (Unit unit : units) {
+      Element element = unit.element;
+      allSpecialClasses.addAll(element.specialClasses);
+    }
+    return allSpecialClasses.toArray(new SpecialClass[allSpecialClasses.size()]);
+  }
 
   float getTroopStrengthWithoutSupport(BattleEnvironment environment) {
     
@@ -49,6 +60,24 @@ public class Force {
       int quantity = unit.quantity;
       
       if (element.isSpecialClass(type)) {
+        float unitSTS = element.ts * ((float) quantity);
+        // TODO: apply Troop Strength Modifiers
+        superiorityTS += unitSTS;
+      }
+    }
+    
+    return superiorityTS;
+  }
+  
+  float getTroopStrengthForSuperiorityExcluding(Element.SpecialClass.Type type, Element.Mobility.Type... mobilities) {
+    
+    float superiorityTS = 0.0f;
+    
+    for (Unit unit : units) {
+      Element element = unit.element;
+      int quantity = unit.quantity;
+      
+      if (element.isSpecialClass(type) && !(element.isMobilityOneOf(mobilities))) {
         float unitSTS = element.ts * ((float) quantity);
         // TODO: apply Troop Strength Modifiers
         superiorityTS += unitSTS;

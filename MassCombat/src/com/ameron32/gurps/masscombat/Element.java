@@ -336,6 +336,22 @@ public class Element {
     return false;
   }
   
+  public boolean isMobility(Mobility.Type type) {
+    for (Mobility m : mobilities) {
+      if (m.type == type) return true;
+    }
+    return false;
+  }
+  
+  public boolean isMobilityOneOf(Mobility.Type... types) {
+    for (Mobility.Type type : types) {
+      // if it has any of the mobilities, return true
+      if (isMobility(type)) return true;
+    }
+    // return false if it has NONE of the mobilities
+    return false;
+  }
+  
   
   
   @Override
