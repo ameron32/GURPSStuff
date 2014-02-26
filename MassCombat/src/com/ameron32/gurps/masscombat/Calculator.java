@@ -19,11 +19,15 @@ public class Calculator {
     // TODO: determine isEncounterBattle, isBadTerrain
     boolean isEncounterBattle = false;
     boolean isBadTerrain = false;
+    // TODO: determine Engineering, Naval, Recon Superiority
+    boolean includeEngineering = false;
+    boolean includeNaval = false;
+    boolean includeRecon = false;
     
     int skillBonus = 0;
     for (SpecialClass sc : forceA.getSpecialClasses()) {
       SpecialClass.Type type = sc.type;
-      skillBonus += specialClassSuperiority(type, forceA, forceB, isEncounterBattle, isBadTerrain);
+      skillBonus += specialClassSuperiority(type, forceA, forceB, isEncounterBattle, isBadTerrain, includeEngineering, includeNaval, includeRecon);
     }
     return skillBonus;
   }
@@ -43,7 +47,9 @@ public class Calculator {
     return 0;
   }
   
-  static int specialClassSuperiority(SpecialClass.Type type, Force forceA, Force forceB, boolean isEncounterBattle, boolean isBadTerrain) {
+  static int specialClassSuperiority(SpecialClass.Type type, Force forceA, Force forceB, 
+      boolean isEncounterBattle, boolean isBadTerrain,
+      boolean includeEngineering, boolean includeNaval, boolean includeRecon) {
     
     float forceASTS = forceA.getTroopStrengthForSuperiority(type);
     float forceBSTS = forceB.getTroopStrengthForSuperiority(type);
@@ -81,10 +87,16 @@ public class Calculator {
       
     // TODO: special circumstances
     case Eng:
-      break;
+      if (!includeEngineering) { break; } // or return 0?
+      else { /* fall through */ }
     case Nav:
-      break;
+      if (!includeNaval) { break; } // or return 0?
+      else { /* fall through */ }
     case Rec:
+      if (!includeRecon) { break; } // or return 0?
+      else { /* fall through */ }
+      
+      value = strategySkillBonusFromTable(oddsFactorFromType);
       break;
       
     // rare or never
