@@ -99,6 +99,8 @@ public class Modifications {
   
   public static class SimpleModifier extends Modifier {
 
+    public SimpleModifier() {}
+    
     // input null
     // expect int return
     public int apply(BattleEnvironment environment) {
