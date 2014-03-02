@@ -30,7 +30,7 @@ public class MCLibrary {
   static Map<Effect.Type, Effect> standardEffects = new TreeMap<Effect.Type, Effect>();
   
   
-  public MCLibrary newInstance() {
+  public static MCLibrary newInstance() {
     return new MCLibrary();
   }
   

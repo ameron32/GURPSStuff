@@ -14,7 +14,7 @@ public class MCLibraryTest extends AndroidTestCase {
   protected void setUp()
       throws Exception {
     super.setUp();
-    mcLibrary = new MCLibrary();
+    mcLibrary = MCLibrary.newInstance();
   }
   
   protected void tearDown()
