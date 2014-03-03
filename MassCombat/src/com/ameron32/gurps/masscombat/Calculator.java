@@ -6,9 +6,9 @@ import com.ameron32.gurps.masscombat.Element.SpecialClass;
 public class Calculator {
   
   public static int findStrategySkillBonusFromRelativeTsForForceA(BattleEnvironment environment, Force forceA, Force forceB) {
+    
     float tsA = forceA.getTroopStrengthWithoutSupport(environment);
     float tsB = forceB.getTroopStrengthWithoutSupport(environment);
-    
     float oddsFactor = tsA / tsB;
     
     int stratBonusRelativeTroopStrength = relativeStrategySkillBonus(oddsFactor);
