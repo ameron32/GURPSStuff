@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import com.ameron32.gurps.masscombat.CampaignManager.Operation;
 import com.ameron32.gurps.masscombat.Characters.Leader;
 import com.ameron32.gurps.masscombat.Element.Mobility;
 import com.ameron32.gurps.masscombat.Element.SpecialClass;
@@ -24,6 +25,9 @@ public class Force {
   Leader           quartermaster;
   // *** SUPPORT *********************
   LogisticForce    tail;
+  
+  // *** OPERATION *******************
+  Operation currentOperation;
   
 
   SpecialClass[] getSpecialClasses() {

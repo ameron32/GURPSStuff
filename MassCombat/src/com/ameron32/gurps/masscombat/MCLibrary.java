@@ -182,11 +182,32 @@ public class MCLibrary {
   
   
   
-  int elementSequenceKey = 0;
-  void storeElement(String elementCode) {
+  
+  
+  
+  
+  
+  
+  
+  void storeCondition(Condition.Type type, String name, Condition condition) {
     
-    standardElements.put(elementSequenceKey, Element.Auto.generateLibFrom(elementCode));
-    elementSequenceKey++;
+    standardConditions.put(type, condition);
+  }
+  
+  void storeEffect(Effect.Type type, String name, Effect effect) {
+    
+    standardEffects.put(type, effect);
+  }
+  
+  
+  void storeMM(MobileModifier.Type type, String name, Modifier... modifiers) {
+    
+    standardMobileModifiers.put(type, MobileModifier.newMobileModifier(name, type, modifiers));
+  }
+  
+  void storeEM(EncampedModifier.Type type, String name, Modifier... modifiers) {
+    
+    standardEncampedModifiers.put(type, EncampedModifier.newEncampedModifier(name, type, modifiers));
   }
   
   /**
@@ -233,24 +254,11 @@ public class MCLibrary {
     return m;
   }
   
-  void storeMM(MobileModifier.Type type, String name, Modifier... modifiers) {
+  int elementSequenceKey = 0;
+  void storeElement(String elementCode) {
     
-    standardMobileModifiers.put(type, MobileModifier.newMobileModifier(name, type, modifiers));
-  }
-  
-  void storeEM(EncampedModifier.Type type, String name, Modifier... modifiers) {
-    
-    standardEncampedModifiers.put(type, EncampedModifier.newEncampedModifier(name, type, modifiers));
-  }
-  
-  void storeCondition(Condition.Type type, String name, Condition condition) {
-    
-    standardConditions.put(type, condition);
-  }
-  
-  void storeEffect(Effect.Type type, String name, Effect effect) {
-    
-    standardEffects.put(type, effect);
+    standardElements.put(elementSequenceKey, Element.Auto.generateLibFrom(elementCode));
+    elementSequenceKey++;
   }
   
   
