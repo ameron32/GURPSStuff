@@ -189,4 +189,5 @@ public class Calculator {
     return new float[] { loserCasualties, winnerCasualties };
   }
   
+    
 }
