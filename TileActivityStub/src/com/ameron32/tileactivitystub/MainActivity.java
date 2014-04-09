@@ -44,14 +44,16 @@ public class MainActivity extends Activity {
   @Override
   public void onResume() {
     super.onResume();
-    test();
+//    test();
   }
   
   private void test() {
     ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar1);
     String[] params = { 
-        Environment.getExternalStorageDirectory().getPath() + "/Download/wallpaper-1186854.jpg",
-        Environment.getExternalStorageDirectory().getPath() + "/Download/convert-1186854.jpg"
+        Environment.getExternalStorageDirectory().getPath() 
+            + "/Download/wallpaper-1186854.jpg",
+        Environment.getExternalStorageDirectory().getPath() 
+            + "/Download/convert-1186854.jpg"
     };
     new ImageConverterTask(this, progressBar).execute(params);
   }
@@ -59,7 +61,7 @@ public class MainActivity extends Activity {
   @Override
   public void onPause() {
     super.onPause();
-    finish();
+//    finish();
   }
   
   /**
