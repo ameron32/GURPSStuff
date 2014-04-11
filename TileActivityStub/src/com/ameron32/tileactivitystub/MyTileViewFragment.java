@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.ameron32.tileactivitystub.tiled.TileMap;
 import com.ameron32.tileactivitystub.tiled.TiledXMLParser;
+import com.ameron32.tileactivitystub.tiled.Tileset;
 import com.qozix.tileview.TileView;
 import com.qozix.tileview.TileView.TileViewEventListener;
 import com.qozix.tileview.graphics.BitmapDecoderAssets;
@@ -23,6 +24,8 @@ import com.qozix.tileview.graphics.BitmapDecoderHttp;
 import com.qozix.tileview.markers.MarkerEventListener;
 
 public class MyTileViewFragment extends TileViewFragment {
+  
+  private static final boolean DEBUG = true;
   
   public static final int BASIC_TILEVIEW   = 0;
   public static final int FULL_TILEVIEW    = 1;
@@ -117,7 +120,7 @@ public class MyTileViewFragment extends TileViewFragment {
       @Override
       public void onScaleChanged(double scale) {
         
-        Log.e("SCALE_CHANGED", "scale: " + scale);
+        log("SCALE_CHANGED", "scale: " + scale);
         for (ImageView iv : lIV) {
           iv.setScaleX((float) scale);
           iv.setScaleY((float) scale);
@@ -137,7 +140,7 @@ public class MyTileViewFragment extends TileViewFragment {
           @Override
           public void onClick(View v) {
             double scale = getTileView().getScale();
-            Log.e("SCALE", "scale: " + scale);
+            log("SCALE", "scale: " + scale);
             placeMarker(R.drawable.fantasy_dwarves, x / scale, y / scale);
             requestView.hide();
           }
@@ -166,7 +169,7 @@ public class MyTileViewFragment extends TileViewFragment {
         String message = "Marker Tapped @: " + x + "/" + y;
         TextView textView = ((TextView) getView().findViewById(R.id.tvHello));
         textView.setText(message);
-        Log.e("MARKER_TAP", message);
+        log("MARKER_TAP", message);
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
       }
     });
@@ -222,10 +225,108 @@ public class MyTileViewFragment extends TileViewFragment {
     
     TileView tileView = getTileView();
     
+    requestView = (RequestView) getView().findViewById(R.id.request_view);
+    
+    tileView.addTileViewEventListener(new TileView.TileViewEventListener() {
+      
+      @Override
+      public void onDetailLevelChanged() {}
+      
+      @Override
+      public void onDoubleTap(int x, int y) {}
+      
+      @Override
+      public void onDrag(int x, int y) {}
+      
+      @Override
+      public void onFingerDown(int x, int y) {}
+      
+      @Override
+      public void onFingerUp(int x, int y) {}
+      
+      @Override
+      public void onFling(int sx, int sy, int dx, int dy) {}
+      
+      @Override
+      public void onFlingComplete(int x, int y) {}
+      
+      @Override
+      public void onPinch(int x, int y) {}
+      
+      @Override
+      public void onPinchComplete(int x, int y) {}
+      
+      @Override
+      public void onPinchStart(int x, int y) {}
+      
+      @Override
+      public void onRenderComplete() {}
+      
+      @Override
+      public void onRenderStart() {}
+      
+      @Override
+      public void onScaleChanged(double scale) {
+        
+        log("SCALE_CHANGED", "scale: " + scale);
+        for (ImageView iv : lIV) {
+          iv.setScaleX((float) scale);
+          iv.setScaleY((float) scale);
+          iv.invalidate();
+        }
+      }
+      
+      @Override
+      public void onScrollChanged(int x, int y) {}
+      
+      @Override
+      public void onTap(final int x, final int y) {
+        
+        requestView.setMessage("Create a New Marker @ " + x + "/" + y + " ?");
+        requestView.setPositiveListener(new View.OnClickListener() {
+          
+          @Override
+          public void onClick(View v) {
+            double scale = getTileView().getScale();
+            log("SCALE", "scale: " + scale);
+            placeMarker(R.drawable.fantasy_dwarves, x / scale, y / scale);
+            requestView.hide();
+          }
+        });
+        requestView.setNegativeListener(new View.OnClickListener() {
+          
+          @Override
+          public void onClick(View v) {
+            requestView.hide();
+          }
+        });
+        requestView.show();
+      }
+      
+      @Override
+      public void onZoomComplete(double scale) {}
+      
+      @Override
+      public void onZoomStart(double scale) {}
+    });
+    
+    tileView.addMarkerEventListener(new MarkerEventListener() {
+      
+      @Override
+      public void onMarkerTap(View v, int x, int y) {
+        String message = "Marker Tapped @: " + x + "/" + y;
+        TextView textView = ((TextView) getView().findViewById(R.id.tvHello));
+        textView.setText(message);
+        log("MARKER_TAP", message);
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+      }
+    });
+    
     // int width = 2730; int height = 2730;
     int[] tilesize = { 1200, 1200 };
     int width = tilesize[0] * 6;
     int height = tilesize[1] * 6;
+    float scale = 0.2f;
     tileView.setSize(width, height);
     
     // LayoutInflater inflater = (LayoutInflater)
@@ -254,11 +355,15 @@ public class MyTileViewFragment extends TileViewFragment {
     float k = 2.0f;
     String httpPrefix = "https://dl.dropboxusercontent.com/u/949753/ANDROID/TileView/indoor/";
     // httpPrefix = "https://copy.com/s/2zeq8Eyhbgje/";
-    String tilesPrefix = "tiles/";
-    String backdropPrefix = "backdrop/";
+    String tilesPrefix = "tileset";
+    String backdropPrefix = "backdrop";
     
     tileView.setDownsampleDecoder(new BitmapDecoderAssets());
-    tileView.setTileDecoder(new MyBitmapDecoderHttp(tmxResult));
+    /**
+     * @note future downsample should smart function (like TileBitmapDecoder)
+     */
+    String downsampleImage = "Basic.png";
+    tileView.setTileDecoder(new MyTileBitmapDecoderHttp(tmxResult, getActivity()));
 
 //    tileView.addDetailLevel(1.0f * k, "indoor/tiles/fantasy_rohan_1x.png", "indoor/backdrop/black.png", 128, 128);
 //    tileView.addDetailLevel(0.5f * k, "indoor/tiles/fantasy_rohan_0_5x.png", "indoor/backdrop/black.png", 64, 64);
@@ -275,12 +380,24 @@ public class MyTileViewFragment extends TileViewFragment {
 //        "black.png", 32, 32);
 
     // FIXME: uncomment when OOM fixed.
+    Tileset.ComponentHandler handler 
+        = new Tileset.ComponentHandler(httpPrefix + tilesPrefix, 
+            "Basic", 600, "png");
 //  tileView.addDetailLevel(1.000f, httpPrefix + tilesPrefix + "dt01_1200_%col%_-%row%.jpg", "black.png", 1200, 1200);
-    tileView.addDetailLevel(0.500f, httpPrefix + tilesPrefix + "dt01_600_%col%_-%row%.jpg", "black.png", 600, 600);
-    tileView.addDetailLevel(0.250f, httpPrefix + tilesPrefix + "dt01_300_%col%_-%row%.jpg", "black.png", 300, 300);
-    tileView.addDetailLevel(0.125f, httpPrefix + tilesPrefix + "dt01_150_%col%_-%row%.jpg", "black.png", 150, 150);
-    tileView.setScale(1.0d);
-    tileView.setScaleLimits(0.8d, 2.25d);
+    tileView.addDetailLevel(0.500f, handler.getDetailLevelUrl(600), downsampleImage, 600, 600);
+    tileView.addDetailLevel(0.250f, handler.getDetailLevelUrl(300), downsampleImage, 300, 300);
+    tileView.addDetailLevel(0.125f, handler.getDetailLevelUrl(150), downsampleImage, 150, 150);
+    
+    // lets center all markers both horizontally and vertically
+    tileView.setMarkerAnchorPoints(-0.5f, -0.5f);
+    
+    // use pixel coordinates to roughly center it
+    // they are calculated against the "full" size of the mapView
+    // i.e., the largest zoom level as it would be rendered at a scale of 1.0f
+    tileView.moveToAndCenter(0, 0);
+    
+    tileView.setScale(scale);
+    tileView.setScaleLimits(0.2d, 2.25d);
 //    tileView.setCacheEnabled(true);
   }
   
@@ -317,7 +434,7 @@ public class MyTileViewFragment extends TileViewFragment {
   
   private void placeMarker(int resId, double x, double y) {
     
-    log("New Marker @ " + x + "/" + y);
+    log("New Marker @ ", x + "/" + y);
     ImageView imageView = new ImageView(this.getActivity());
     imageView.setImageResource(resId);
     imageView.setScaleX((float) getTileView().getScale());
@@ -327,10 +444,11 @@ public class MyTileViewFragment extends TileViewFragment {
     getTileView().addMarker(imageView, x, y);
   }
   
-  private void log(String s) {
-    
-    Log.e("MyTileViewFragment", s);
-    Toast.makeText(getActivity(), s, Toast.LENGTH_SHORT).show();
+  private void log(String tag, String message) {
+    if (DEBUG) {
+      Log.i("MyTileViewFragment", tag + " " + message);
+      Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
   }
   
 }

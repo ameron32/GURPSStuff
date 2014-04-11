@@ -124,36 +124,37 @@ public class TileMap {
 
   @Override
   public String toString() {
-   String toString = "TileMap [orientation=" + orientation.name() + ", width=" + width + ", height=" + height + ", tileWidth="
-       + tileWidth + ", tileHeight=" + tileHeight;
-   if (tilesets != null) {
-     StringBuilder sb = new StringBuilder();
-     sb.append(toString);
-     for (TilesetWrapper tileset : tilesets) {
-       sb.append("\n");
-       sb.append(tileset);
-     }
-     toString = sb.toString();
-   } else {
-     toString = toString.concat("\n--No Tilesets");
-   }
-   if (layers != null) {
-     StringBuilder sb = new StringBuilder();
-     sb.append(toString);
-     for (Layer layer : layers) {
-       sb.append("\n");
-       sb.append(layer);
-     }
-     toString = sb.toString();
-   } else {
-     toString = toString.concat("\n--No Layers");
-   }
-   toString += "]";
-   return toString; 
+    String toString = "TileMap [orientation=" + orientation.name() + ", width=" + width + ", height=" + height
+        + ", tileWidth=" + tileWidth + ", tileHeight=" + tileHeight;
+    if (tilesets != null) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(toString);
+      for (TilesetWrapper tileset : tilesets) {
+        sb.append("\n");
+        sb.append(tileset);
+      }
+      toString = sb.toString();
+    }
+    else {
+      toString = toString.concat("\n--No Tilesets");
+    }
+    if (layers != null) {
+      StringBuilder sb = new StringBuilder();
+      sb.append(toString);
+      for (Layer layer : layers) {
+        sb.append("\n");
+        sb.append(layer);
+      }
+      toString = sb.toString();
+    }
+    else {
+      toString = toString.concat("\n--No Layers");
+    }
+    toString += "]";
+    return toString;
   }
 
   public Tile[][] getTiles(int layer) {
-    
     return layers.get(layer).getTiles();
   }
   
@@ -274,14 +275,10 @@ public class TileMap {
       return "TilesetWrapper [firstGID=" + firstGID + ", source=" + source 
           + " tileset=[" + tileset + "]]";
     }
-    
-    
   }
   
   public enum Orientation {
     orthogonal
-    
-    
   }
 
   public TileMap(TileMap tileMap) {
@@ -293,6 +290,4 @@ public class TileMap {
     this.tileWidth = tileMap.tileWidth;
     this.tileHeight = tileMap.tileHeight;
   }
-  
-  
 }

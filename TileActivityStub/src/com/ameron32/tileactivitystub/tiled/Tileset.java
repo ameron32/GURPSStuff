@@ -1,8 +1,6 @@
 package com.ameron32.tileactivitystub.tiled;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-
 
 public class Tileset {
   
@@ -121,6 +119,105 @@ public class Tileset {
     return getTileAt(size, colNumber, rowNumber, tileset);
   }
   
+  public static class ComponentHandler {
+    
+    String httpPrefix;
+    String tileset;
+    int maxSize;
+    String extension;
+    
+    public ComponentHandler(String httpPrefix, String tileset, int maxSize, String extension) {
+      
+      this.httpPrefix = httpPrefix;
+      this.tileset = tileset;
+      this.maxSize = maxSize;
+      this.extension = extension;
+    }
+    
+    /**
+     * 
+     * @param size Width in pixels of unique tile size. Square tiles only.
+     * @return Coded pseudo-url for DetailLevelUrl input. 
+     * @note  not compatible as a standard url
+     */
+    public String getDetailLevelUrl(int size) {
+      // http://www.myurl.com/whatever
+      //     /
+      //     #tileset_600_%col%_%row%_jpg
+      String detailLevelUrl = httpPrefix + "/" + "#" + tileset + "_" + size 
+          + "_" + "%col%" + "_" + "%row%" + "_" + extension;
+      return detailLevelUrl;
+    }
+    
+    public static ComponentHolder extractHolder(String decodeUrl) {
+
+      String[] parts = decodeUrl.split("#");
+      String httpPrefix = parts[0];
+      String fileName = parts[1];
+      
+      String[] components = fileName.split("_");
+      String tileset = components[0];
+      String size = components[1];
+      String column  = components[2];
+      String row = components[3];
+      String extension = components[4];
+      
+      ComponentHolder ch = ComponentHolder.newInstance(httpPrefix, 
+          tileset, Integer.valueOf(size), 
+          Integer.valueOf(column), Integer.valueOf(row), extension);
+      
+      return ch;
+    }
+  }
   
+  public static class ComponentHolder {
+
+    public String httpPrefix;
+    public String filename;
+    public String extension;
+    public String url;
+    
+//  public String file;
+    public String tileset;
+    public int size;
+    public int column;
+    public int row;
+    
+    private ComponentHolder() {}
+    
+    public static ComponentHolder newInstance(String httpPrefix, 
+        String tileset, int size,
+        int column, int row,
+        String extension) {
+      ComponentHolder ch = new ComponentHolder();
+      
+      ch.httpPrefix = httpPrefix;
+      ch.extension = extension;
+      
+      ch.tileset = tileset;
+      ch.size = size;
+      ch.column = column;
+      ch.row = row;
+      
+      ch.makeUrl();
+      
+      return ch;
+    }
+    
+    private void makeFilename() {
+      this.filename = this.tileset + this.size + "." + this.extension;
+    }
+    
+    private void makeUrl() {
+      makeFilename();
+      this.url = this.httpPrefix + this.filename;
+    }
+
+    @Override
+    public String toString() {
+      return "ComponentHolder [httpPrefix=" + httpPrefix + ", filename=" + filename + ", extension=" + extension
+          + ", url=" + url + ", tileset=" + tileset + ", size=" + size + ", column=" + column + ", row=" + row + "]";
+    }
+  }
   
 }

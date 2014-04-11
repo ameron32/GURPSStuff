@@ -1,5 +1,8 @@
 package com.ameron32.tileactivitystub.tiled;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+
 public class Tile {
   
   private boolean x;
@@ -147,6 +150,28 @@ public class Tile {
 //    }
     
     return tile;
+  }
+  
+  public Bitmap rotateFromTile(Bitmap tileImage) {
+    Tile tile = this;
+    if (tile.x() || tile.y() || tile.d()) {
+      int sx, sy;
+      sx = sy = 1; 
+      Matrix m = new Matrix();
+      if (tile.x()) {
+        sx = sx * -1;
+      }
+      if (tile.y()) {
+        sy = sy * -1;
+      }
+      if (tile.d()) {
+        sy = sy * -1;
+        m.preRotate(90);
+      }
+      m.preScale(sx, sy);
+      return Bitmap.createBitmap(tileImage, 0, 0, tileImage.getWidth(), tileImage.getHeight(), m, false);
+    }
+    return tileImage;
   }
 
   @Override
