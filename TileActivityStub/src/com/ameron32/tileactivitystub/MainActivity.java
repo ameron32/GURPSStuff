@@ -1,5 +1,7 @@
 package com.ameron32.tileactivitystub;
 
+import com.ameron32.tileactivitystub.interfaces.TileViewFragmentListener;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements TileViewFragmentListener {
   
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +21,7 @@ public class MainActivity extends Activity {
     setContentView(R.layout.activity_main);
     
     if (savedInstanceState == null) {
-      getFragmentManager().beginTransaction().add(R.id.container, MyTileViewFragment.newInstance()).commit();
+      getFragmentManager().beginTransaction().add(R.id.container, SmartTileViewFragment.newInstance("cavesNew")).commit();
     }
   }
   

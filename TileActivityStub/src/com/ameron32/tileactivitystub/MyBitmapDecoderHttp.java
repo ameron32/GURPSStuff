@@ -20,7 +20,13 @@ import com.ameron32.tileactivitystub.tiled.TileMap;
 import com.ameron32.tileactivitystub.tiled.Tileset;
 import com.qozix.tileview.graphics.BitmapDecoderHttp;
 
-public class MyBitmapDecoderHttp extends BitmapDecoderHttp {
+/**
+ * RETIRED IN FAVOR OF MyTileBitmapDecoderHttp
+ * REMAINS FOR REFERENCE ONLY
+ * @author klemeilleur
+ *
+ */
+public abstract class MyBitmapDecoderHttp extends BitmapDecoderHttp {
   
   private static final BitmapFactory.Options OPTIONS = new BitmapFactory.Options();
   

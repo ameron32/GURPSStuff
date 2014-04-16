@@ -1,5 +1,10 @@
 package com.ameron32.tileactivitystub.tiled;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.ameron32.tileactivitystub.tiled.TileMap.TilesetWrapper;
+
 import android.graphics.Bitmap;
 
 public class Tileset {
@@ -11,7 +16,7 @@ public class Tileset {
   private static final String IMAGE_WIDTH  = "width";
   private static final String IMAGE_HEIGHT = "height";
   
-  public String              name;
+  public String               name;
   private int                 tileWidth;
   private int                 tileHeight;
   
@@ -82,11 +87,32 @@ public class Tileset {
     this.imgHeight = tileset.imgHeight;
   }
   
+  private TilesetWrapper tilesetWrapper = null;
+  public void setWrapper(TilesetWrapper tilesetWrapper) {
+    this.tilesetWrapper = tilesetWrapper;
+  }
+  
+  public TilesetWrapper getWrapper() {
+    return tilesetWrapper;
+  }
+  
+  public int getMaxColumns() {
+    return imgWidth / tileWidth;
+  }
+  
+  public int getMaxRows() {
+    return imgHeight / tileHeight;
+  }
+  
+  public int getMaxTiles() {
+    return getMaxColumns() * getMaxRows();
+  }
+  
   public Bitmap getTileAt(int size, int x, int y, Bitmap tileset) {
     
     // sanity check
-    int maxX = imgWidth / tileWidth;
-    int maxY = imgHeight / tileHeight;
+    int maxX = getMaxColumns();
+    int maxY = getMaxRows();
     if (x > maxX - 1 || y > maxY - 1) { return null; }
     
     int startX = x * tileWidth;
@@ -105,8 +131,8 @@ public class Tileset {
   public Bitmap getTileFromGID(int size, int gid, Bitmap tileset) {
     
     // sanity check
-    int maxX = imgWidth / tileWidth;
-    int maxY = imgHeight / tileHeight;
+    int maxX = getMaxColumns();
+    int maxY = getMaxRows();
     int maxGID = maxX * maxY;
     if (gid > maxGID - 1) { return null; }
     
@@ -121,15 +147,14 @@ public class Tileset {
   
   public static class ComponentHandler {
     
-    String httpPrefix;
-    String tileset;
-    int maxSize;
-    String extension;
+		TileMap tileMap;
+		String httpPrefix;
+		int maxSize;
+		String extension;
     
-    public ComponentHandler(String httpPrefix, String tileset, int maxSize, String extension) {
-      
+    public ComponentHandler(TileMap tileMap, String httpPrefix, int maxSize, String extension) {
+      this.tileMap = tileMap;
       this.httpPrefix = httpPrefix;
-      this.tileset = tileset;
       this.maxSize = maxSize;
       this.extension = extension;
     }
@@ -143,27 +168,27 @@ public class Tileset {
     public String getDetailLevelUrl(int size) {
       // http://www.myurl.com/whatever
       //     /
-      //     #tileset_600_%col%_%row%_jpg
-      String detailLevelUrl = httpPrefix + "/" + "#" + tileset + "_" + size 
+      //     #tilemap_600_%col%_%row%_jpg
+      String detailLevelUrl = httpPrefix + "/" + "#" + tileMap + "_" + size 
           + "_" + "%col%" + "_" + "%row%" + "_" + extension;
       return detailLevelUrl;
     }
     
-    public static ComponentHolder extractHolder(String decodeUrl) {
+    public static ComponentHolder extractHolder(TileMap tileMap, String decodeUrl) {
 
       String[] parts = decodeUrl.split("#");
       String httpPrefix = parts[0];
       String fileName = parts[1];
       
       String[] components = fileName.split("_");
-      String tileset = components[0];
+      String tilemap = components[0];
       String size = components[1];
       String column  = components[2];
       String row = components[3];
       String extension = components[4];
       
       ComponentHolder ch = ComponentHolder.newInstance(httpPrefix, 
-          tileset, Integer.valueOf(size), 
+          tileMap, Integer.valueOf(size), 
           Integer.valueOf(column), Integer.valueOf(row), extension);
       
       return ch;
@@ -172,21 +197,22 @@ public class Tileset {
   
   public static class ComponentHolder {
 
-    public String httpPrefix;
-    public String filename;
-    public String extension;
-    public String url;
-    
-//  public String file;
-    public String tileset;
-    public int size;
-    public int column;
-    public int row;
+		public TileMap tilemap;
+
+		public String httpPrefix;
+		public String filename;
+		public String extension;
+		public String url;
+
+		// public String file;
+		public int size;
+		public int column;
+		public int row;
     
     private ComponentHolder() {}
     
     public static ComponentHolder newInstance(String httpPrefix, 
-        String tileset, int size,
+        TileMap tilemap, int size,
         int column, int row,
         String extension) {
       ComponentHolder ch = new ComponentHolder();
@@ -194,30 +220,26 @@ public class Tileset {
       ch.httpPrefix = httpPrefix;
       ch.extension = extension;
       
-      ch.tileset = tileset;
+      ch.tilemap = tilemap;
       ch.size = size;
       ch.column = column;
       ch.row = row;
       
-      ch.makeUrl();
-      
       return ch;
     }
     
-    private void makeFilename() {
-      this.filename = this.tileset + this.size + "." + this.extension;
+    private String getFilename(String tileset) {
+      return tileset + this.size + "." + this.extension;
     }
     
-    private void makeUrl() {
-      makeFilename();
-      this.url = this.httpPrefix + this.filename;
+    public String makeUrl(String tileset) {
+      return this.httpPrefix + getFilename(tileset);
     }
 
     @Override
     public String toString() {
       return "ComponentHolder [httpPrefix=" + httpPrefix + ", filename=" + filename + ", extension=" + extension
-          + ", url=" + url + ", tileset=" + tileset + ", size=" + size + ", column=" + column + ", row=" + row + "]";
+          + ", url=" + url + ", tilemap=" + tilemap.toString() + ", size=" + size + ", column=" + column + ", row=" + row + "]";
     }
   }
-  
 }

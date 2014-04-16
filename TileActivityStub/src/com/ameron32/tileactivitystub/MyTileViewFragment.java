@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ameron32.tileactivitystub.interfaces.HttpDecoderCallbacks;
 import com.ameron32.tileactivitystub.tiled.TileMap;
 import com.ameron32.tileactivitystub.tiled.TiledXMLParser;
 import com.ameron32.tileactivitystub.tiled.Tileset;
@@ -227,118 +228,32 @@ public class MyTileViewFragment extends TileViewFragment {
     
     requestView = (RequestView) getView().findViewById(R.id.request_view);
     
-    tileView.addTileViewEventListener(new TileView.TileViewEventListener() {
-      
-      @Override
-      public void onDetailLevelChanged() {}
-      
-      @Override
-      public void onDoubleTap(int x, int y) {}
-      
-      @Override
-      public void onDrag(int x, int y) {}
-      
-      @Override
-      public void onFingerDown(int x, int y) {}
-      
-      @Override
-      public void onFingerUp(int x, int y) {}
-      
-      @Override
-      public void onFling(int sx, int sy, int dx, int dy) {}
-      
-      @Override
-      public void onFlingComplete(int x, int y) {}
-      
-      @Override
-      public void onPinch(int x, int y) {}
-      
-      @Override
-      public void onPinchComplete(int x, int y) {}
-      
-      @Override
-      public void onPinchStart(int x, int y) {}
-      
-      @Override
-      public void onRenderComplete() {}
-      
-      @Override
-      public void onRenderStart() {}
-      
-      @Override
-      public void onScaleChanged(double scale) {
-        
-        log("SCALE_CHANGED", "scale: " + scale);
-        for (ImageView iv : lIV) {
-          iv.setScaleX((float) scale);
-          iv.setScaleY((float) scale);
-          iv.invalidate();
-        }
-      }
-      
-      @Override
-      public void onScrollChanged(int x, int y) {}
-      
-      @Override
-      public void onTap(final int x, final int y) {
-        
-        requestView.setMessage("Create a New Marker @ " + x + "/" + y + " ?");
-        requestView.setPositiveListener(new View.OnClickListener() {
-          
-          @Override
-          public void onClick(View v) {
-            double scale = getTileView().getScale();
-            log("SCALE", "scale: " + scale);
-            placeMarker(R.drawable.fantasy_dwarves, x / scale, y / scale);
-            requestView.hide();
-          }
-        });
-        requestView.setNegativeListener(new View.OnClickListener() {
-          
-          @Override
-          public void onClick(View v) {
-            requestView.hide();
-          }
-        });
-        requestView.show();
-      }
-      
-      @Override
-      public void onZoomComplete(double scale) {}
-      
-      @Override
-      public void onZoomStart(double scale) {}
-    });
+//    float k = 2.0f;
+    String httpPrefix = "https://dl.dropboxusercontent.com/u/949753/ANDROID/TileView/indoor/";
+    String tilesPrefix = "tileset";
+//    String backdropPrefix = "backdrop";
     
-    tileView.addMarkerEventListener(new MarkerEventListener() {
-      
-      @Override
-      public void onMarkerTap(View v, int x, int y) {
-        String message = "Marker Tapped @: " + x + "/" + y;
-        TextView textView = ((TextView) getView().findViewById(R.id.tvHello));
-        textView.setText(message);
-        log("MARKER_TAP", message);
-        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-      }
-    });
+    TileMap tmxResult = TiledXMLParser.parseTMX(getActivity(), "cavesNew.tmx");
+    Log.i("KrisTMX", tmxResult.toString());
+
+    
+
+    Tileset.ComponentHandler handler 
+      = new Tileset.ComponentHandler( 
+          tmxResult, httpPrefix + tilesPrefix, 600, "png");
+    
+    
+    
+    
+    
+    
     
     // int width = 2730; int height = 2730;
     int[] tilesize = { 1200, 1200 };
-    int width = tilesize[0] * 6;
-    int height = tilesize[1] * 6;
+    int width = tilesize[0] * 9;
+    int height = tilesize[1] * 9;
     float scale = 0.2f;
     tileView.setSize(width, height);
-    
-    // LayoutInflater inflater = (LayoutInflater)
-    // getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    // GridLayout gridLayout = (GridLayout) inflater.inflate(R.layout.grid_view,
-    // null);
-    // tileView.addView(gridLayout);
-    //
-    // for (int i = 0; i < 16 * 16; i++) {
-    // View v = inflater.inflate(R.layout.grid_view_tile_child, null);
-    // gridLayout.addView(v);
-    // }
     
     tileView.addTileViewEventListener(new MyTileViewEventListener() {
       
@@ -349,21 +264,15 @@ public class MyTileViewFragment extends TileViewFragment {
       }
     });
     
-    TileMap tmxResult = TiledXMLParser.parseTMX(getActivity(), "basic.tmx");
-    Log.i("KrisTMX", tmxResult.toString());
     
-    float k = 2.0f;
-    String httpPrefix = "https://dl.dropboxusercontent.com/u/949753/ANDROID/TileView/indoor/";
-    // httpPrefix = "https://copy.com/s/2zeq8Eyhbgje/";
-    String tilesPrefix = "tileset";
-    String backdropPrefix = "backdrop";
+
     
     tileView.setDownsampleDecoder(new BitmapDecoderAssets());
     /**
      * @note future downsample should smart function (like TileBitmapDecoder)
      */
-    String downsampleImage = "Basic.png";
-    tileView.setTileDecoder(new MyTileBitmapDecoderHttp(tmxResult, getActivity()));
+    String downsampleImage = "cavesNew.png";
+    tileView.setTileDecoder(new MyFOWTileBitmapDecoder(getTileView(), tmxResult, (HttpDecoderCallbacks) getActivity()));
 
 //    tileView.addDetailLevel(1.0f * k, "indoor/tiles/fantasy_rohan_1x.png", "indoor/backdrop/black.png", 128, 128);
 //    tileView.addDetailLevel(0.5f * k, "indoor/tiles/fantasy_rohan_0_5x.png", "indoor/backdrop/black.png", 64, 64);
@@ -380,9 +289,6 @@ public class MyTileViewFragment extends TileViewFragment {
 //        "black.png", 32, 32);
 
     // FIXME: uncomment when OOM fixed.
-    Tileset.ComponentHandler handler 
-        = new Tileset.ComponentHandler(httpPrefix + tilesPrefix, 
-            "Basic", 600, "png");
 //  tileView.addDetailLevel(1.000f, httpPrefix + tilesPrefix + "dt01_1200_%col%_-%row%.jpg", "black.png", 1200, 1200);
     tileView.addDetailLevel(0.500f, handler.getDetailLevelUrl(600), downsampleImage, 600, 600);
     tileView.addDetailLevel(0.250f, handler.getDetailLevelUrl(300), downsampleImage, 300, 300);
@@ -399,6 +305,7 @@ public class MyTileViewFragment extends TileViewFragment {
     tileView.setScale(scale);
     tileView.setScaleLimits(0.2d, 2.25d);
 //    tileView.setCacheEnabled(true);
+
   }
   
   @Override
@@ -450,5 +357,4 @@ public class MyTileViewFragment extends TileViewFragment {
       Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
   }
-  
 }

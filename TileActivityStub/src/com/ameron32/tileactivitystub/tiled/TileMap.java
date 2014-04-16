@@ -3,18 +3,23 @@ package com.ameron32.tileactivitystub.tiled;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.qozix.tileview.TileView;
+
 import android.content.Context;
 import android.util.Log;
 
 
-
 public class TileMap {
-  List<TilesetWrapper> tilesets;
-  List<Layer> layers;
-  
-  Orientation orientation;
-  int width, height;
-  int tileWidth, tileHeight;
+	
+	public String mapImage;
+
+	List<TilesetWrapper> tilesets;
+	List<Layer> layers;
+
+	Orientation orientation;
+	int width, height;
+	int tileWidth, tileHeight;
+
   
   public TileMap() {
     orientation = Orientation.orthogonal;
@@ -22,29 +27,29 @@ public class TileMap {
     tileWidth = tileHeight = 0;
   }
   
-  public void setAttribute(String tag, String name, String value) {
-    if (tag.equalsIgnoreCase("map")) {
-    if (name.equalsIgnoreCase("orientation")) {
-      orientation = Orientation.valueOf(value);
-    }
-    
-    if (name.equalsIgnoreCase("width")) {
-      width = Integer.valueOf(value);
-    }
-    
-    if (name.equalsIgnoreCase("height")) {
-      height = Integer.valueOf(value);
-    }
-    
-    if (name.equalsIgnoreCase("tileWidth")) {
-      tileWidth = Integer.valueOf(value);
-    }
-    
-    if (name.equalsIgnoreCase("tileHeight")) {
-     tileHeight = Integer.valueOf(value); 
-    }
-    }
-  }
+	public void setAttribute(String tag, String name, String value) {
+		if (tag.equalsIgnoreCase("map")) {
+			if (name.equalsIgnoreCase("orientation")) {
+				orientation = Orientation.valueOf(value);
+			}
+
+			if (name.equalsIgnoreCase("width")) {
+				width = Integer.valueOf(value);
+			}
+
+			if (name.equalsIgnoreCase("height")) {
+				height = Integer.valueOf(value);
+			}
+
+			if (name.equalsIgnoreCase("tileWidth")) {
+				tileWidth = Integer.valueOf(value);
+			}
+
+			if (name.equalsIgnoreCase("tileHeight")) {
+				tileHeight = Integer.valueOf(value);
+			}
+		}
+	}
   
   public void setLayerAttribute(String tag, String name, String value) {
     if (tag.equalsIgnoreCase("layer")) {
@@ -165,7 +170,14 @@ public class TileMap {
     return null;
   }
 
-
+  public Tileset getTilesetFromGID(int gid) {
+    for (TilesetWrapper tw : tilesets) {
+      int first = tw.firstGID;
+      int last = first + tw.getMaxTiles() -1;
+      if (first <= gid && gid <= last) return tw.tileset;
+    }
+    return null;
+  }
 
 
 
@@ -205,6 +217,10 @@ public class TileMap {
     public void addTile(Tile tile) {
       if (tileData == null) { tileData = new ArrayList<Tile>(); }
       tileData.add(tile);
+    }
+    
+    public void getTilesetFromGID(int gid) {
+      
     }
 
     @Override
@@ -247,8 +263,12 @@ public class TileMap {
   
   public static class TilesetWrapper {
     Tileset tileset;
-    int firstGID;
+    private int firstGID;
     String source;
+    
+    public int getFirstGid() {
+      return firstGID;
+    }
     
     TilesetWrapper() {
       tileset = null;
@@ -268,6 +288,11 @@ public class TileMap {
     
     public void setTileset(Tileset tileset) {
       this.tileset = tileset;
+      tileset.setWrapper(this);
+    }
+    
+    int getMaxTiles() {
+      return tileset.getMaxTiles();
     }
 
     @Override
@@ -289,5 +314,21 @@ public class TileMap {
     this.height = tileMap.height;
     this.tileWidth = tileMap.tileWidth;
     this.tileHeight = tileMap.tileHeight;
+  }
+  
+  public int getTileWidth() {
+	  return tileWidth;
+  }
+  
+  public int getTileHeight() {
+	  return tileHeight;
+  }
+  
+  public int getMapTileColumns() {
+	  return width;
+  }
+  
+  public int getMapTileRows() {
+	  return height;
   }
 }

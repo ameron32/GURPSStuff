@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="1" height="1" tilewidth="1200" tileheight="1200">
+ <tileset firstgid="1" source="Caves.tsx"/>
+ <tileset firstgid="40" source="Water.tsx"/>
+ <tileset firstgid="49" source="RiverTempleOutside.tsx"/>
+ <tileset firstgid="85" source="OpenAreas.tsx"/>
+ <tileset firstgid="103" source="Basic.tsx"/>
+ <layer name="Tile Layer 1" width="1" height="1">
+  <data>
+   <tile gid="1073741832"/>
+  </data>
+ </layer>
+</map>
