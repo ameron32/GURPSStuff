@@ -1,0 +1,35 @@
+<com.ameron32.chatreborn5.views.TouchlessSlidingPaneLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sliding_pane_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <fragment
+        android:id="@+id/screen_list"
+        android:name="com.ameron32.chatreborn5.ScreenListFragment"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="left" />
+
+    <RelativeLayout
+        android:id="@+id/main_window"
+        android:layout_width="450dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+        
+        <FrameLayout
+            android:id="@+id/content_pane"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp" />
+
+        <com.ameron32.chatreborn5.views.SendBar
+            android:id="@+id/vSendBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+</com.ameron32.chatreborn5.views.TouchlessSlidingPaneLayout>

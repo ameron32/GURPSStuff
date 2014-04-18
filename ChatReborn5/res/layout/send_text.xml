@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <com.ameron32.chatreborn5.views.MessageFlipper
+        android:id="@+id/vfNotify"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" >
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.ameron32.chatreborn5.views.MessageFlipper>
+
+    <RelativeLayout
+        android:id="@+id/rlFancyButton"
+        style="@style/SendButton"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/vfNotify" >
+
+        <ImageButton
+            android:id="@+id/redButton"
+            style="@style/SendButton"
+            android:background="@null"
+            android:src="@drawable/red_button_x" />
+
+        <ImageButton
+            android:id="@+id/blueButton"
+            style="@style/SendButton"
+            android:background="@null"
+            android:src="@drawable/blue_button_x" />
+
+        <ImageButton
+            android:id="@+id/send_button"
+            style="@style/SendButton"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:src="@drawable/ic_action_send_now" />
+
+        <ImageButton
+            android:id="@+id/mic_button"
+            style="@style/SendButton"
+            android:layout_centerInParent="true"
+            android:background="@null"
+            android:src="@drawable/ic_action_microphone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlAlignment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rlFancyButton"
+        android:layout_below="@+id/vfNotify"
+        android:layout_toLeftOf="@+id/rlFancyButton" >
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/ivCharacter"
+            android:layout_alignTop="@+id/ivCharacter"
+            android:layout_toRightOf="@+id/ivCharacter"
+            android:ems="10"
+            android:gravity="bottom"
+            android:hint="Message"
+            android:imeOptions="actionSend"
+            android:maxHeight="200dp"
+            android:textSize="12dp" />
+
+        <ImageView
+            android:id="@+id/ivCharacter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/gen_avatar" />
+
+        <ImageButton
+            android:id="@+id/clear_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/message"
+            android:background="@null"
+            android:src="@drawable/ic_action_cancel" />
+
+        <org.lucasr.twowayview.TwoWayView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/twlvUnreads"
+            style="@style/TwoWayView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/ivCharacter"
+            android:drawSelectorOnTop="false" />
+
+        <TextView
+            android:id="@+id/tvDebug"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:gravity="right"
+            android:text="debug" />
+
+        <TextView
+            android:id="@+id/tvAudioRMSTest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true" />
+    </RelativeLayout>
+
+</RelativeLayout>
